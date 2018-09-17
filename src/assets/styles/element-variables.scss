@@ -1,0 +1,9 @@
+$--color-primary: #1976d2 !default;
+$--color-success: #21a325 !default;
+$--color-warning: #f5d01b !default;
+$--color-danger: #d11a32 !default;
+$--button-hover-tint-percent: 10% !default;
+/* 改变 icon 字体路径变量，必需 */
+
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+@import "~element-ui/packages/theme-chalk/src/index";
