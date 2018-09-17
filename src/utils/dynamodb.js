@@ -95,7 +95,7 @@ class DynamoDBInstance {
 
   async putItem(params, successCallback, completeCallback) {
     console.log(this.client)
-    const res = await this.client.query(params)
+    const res = await this.client.put(params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {

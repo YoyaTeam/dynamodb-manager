@@ -85,19 +85,9 @@ export default {
       console.log(this.editor.getValue())
       const params = {
         TableName: 'Movies',
-        Item: {
-          title: {
-            S: 'Chen zizhao'
-          },
-          year: {
-            S: '2018'
-          },
-          info: {
-            S: 'Call Me Today'
-          }
-        }
+        Item: JSON.parse(this.editor.getValue())
       }
-      this.$dynamoDB.client = 'dynamodb'
+      this.$dynamoDB.client = 'docClient'
       this.$dynamoDB.putItem(params, res => {
         console.log(res)
       })
