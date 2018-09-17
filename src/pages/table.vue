@@ -73,7 +73,7 @@
         <router-view/>
       </div>
     </transition>
-    <json-editor></json-editor>
+    <json-editor :tableName="tableName"></json-editor>
   </div>
 </template>
 
@@ -96,6 +96,9 @@ export default {
     }
   },
   computed: {
+    tableName() {
+      return this.$route.params.name || ''
+    },
     config: function() {
       return this.$store.state.aws.config
     },
@@ -107,6 +110,12 @@ export default {
   },
   mounted() {
     this.listenBodyMouse()
+    if (
+      Utils.isNotEmpty(this.config.region) &&
+      Utils.isNotEmpty(this.config.endpoint)
+    ) {
+      this.listTables()
+    }
   },
   watch: {
     config: {
@@ -115,7 +124,6 @@ export default {
           Utils.isNotEmpty(newValue.region) &&
           Utils.isNotEmpty(newValue.endpoint)
         ) {
-          this.$dynamoDB.config = newValue
           this.listTables()
         }
       },
@@ -135,7 +143,6 @@ export default {
     },
     listTables() {
       this.$dynamoDB.config = this.config
-      this.$dynamoDB.client = 'dynamodb'
       var params = {
         Limit: 10,
         ExclusiveStartTableName: this.exclusiveStartTableName
@@ -153,7 +160,6 @@ export default {
     },
     describeTable(tableName) {
       const table = { tableName }
-      this.$dynamoDB.client = 'dynamodb'
       this.$dynamoDB.describeTable(tableName, res => {
         const data = res.data
         if (!data) {

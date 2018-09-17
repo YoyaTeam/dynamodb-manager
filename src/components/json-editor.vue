@@ -8,7 +8,7 @@
             <span slot="footer"
                 class="dialog-footer">
                 <el-button type="success"
-                    @click="putItem">确 定</el-button>
+                    @click="putItem">Save Item</el-button>
             </span>
         </el-dialog>
 
@@ -24,6 +24,12 @@ import 'ace-builds/src-noconflict/ace'
 import 'ace-builds/webpack-resolver'
 
 export default {
+  props: {
+    tableName: {
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       editor: null
@@ -31,14 +37,14 @@ export default {
   },
   computed: {
     ...mapGetters({
+      awsConfig: 'config',
       showEditor: 'showEditor',
       editorText: 'text'
     })
   },
   watch: {
     showEditor(val) {
-      console.log('show', document.getElementById('editor'))
-      if (val && document.getElementById('editor') && !this.editor) {
+      if (val && !this.editor) {
         this.initEditor()
       }
     },
@@ -54,24 +60,24 @@ export default {
   },
   methods: {
     initEditor() {
-      console.log(document.getElementById('editor'))
-      if (!document.getElementById('editor')) {
-        return
-      }
       this.$nextTick(() => {
-        if (this.editor) {
+        if (this.editor || !document.getElementById('editor')) {
           return
         }
+        console.log('init', document.getElementById('editor'))
+
         this.editor = ace.edit(null, {
           maxLines: 50,
           minLines: 10,
-          value: this.editorText,
+          value: JSON.stringify(this.editorText, null, '\t'),
           mode: 'ace/mode/json',
           bug: 1
         })
 
         this.editor.selection.setRange(new Range(0, 0, 0, 3))
-
+        // this.editor.on('change', data => {
+        //   console.log('change', data)
+        // })
         document.getElementById('editor').appendChild(this.editor.container)
       })
     },
@@ -82,12 +88,11 @@ export default {
       this.SET_SHOWEDITOR(false)
     },
     putItem() {
-      console.log(this.editor.getValue())
       const params = {
-        TableName: 'Movies',
+        TableName: this.tableName,
         Item: JSON.parse(this.editor.getValue())
       }
-      this.$dynamoDB.client = 'docClient'
+
       this.$dynamoDB.putItem(params, res => {
         console.log(res)
       })

@@ -9,14 +9,18 @@ const state = () => ({
 })
 
 const mutations = {
-  UPDATE_REGION (state, region) {
+  UPDATE_REGION(state, region) {
     state.config.region = region
   },
-  UPDATE_ENDPOINT (state, endpoint) {
+  UPDATE_ENDPOINT(state, endpoint) {
     state.config.endpoint = endpoint
   }
 }
+const getters = {
+  config: state => state.config
+}
 export default {
   state,
+  getters,
   mutations
 }

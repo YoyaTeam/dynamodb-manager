@@ -18,7 +18,6 @@ class DynamoDBInstance {
   constructor(config) {
     this._config = config
     this.params = {}
-    this._client = dynamodb
   }
 
   get config() {
@@ -30,24 +29,14 @@ class DynamoDBInstance {
     this.refresh(config)
   }
 
-  get client() {
-    return this._client
-  }
-
-  set client(name) {
-    name === 'dynamodb' ? this._client = dynamodb : this._client = docClient
-  }
-
   refresh(config) {
     AWS.config.update(config)
     dynamodb = new AWS.DynamoDB()
     docClient = new AWS.DynamoDB.DocumentClient()
-    this.client = 'dynamodb'
   }
 
   async listTables(params, successCallback, completeCallback) {
-    console.log(this.client)
-    const res = await this.client.listTables(params || this.params)
+    const res = await dynamodb.listTables(params || this.params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {
@@ -58,7 +47,7 @@ class DynamoDBInstance {
   }
 
   async describeTable(TableName, successCallback, completeCallback) {
-    const res = await this.client.describeTable({
+    const res = await dynamodb.describeTable({
       TableName
     })
     res
@@ -71,7 +60,7 @@ class DynamoDBInstance {
   }
 
   async scanTable(params, successCallback, completeCallback) {
-    const res = await this.client.scan(params)
+    const res = await dynamodb.scan(params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {
@@ -82,7 +71,7 @@ class DynamoDBInstance {
   }
 
   async queryTable(params, successCallback, completeCallback) {
-    const res = await this.client.query(params)
+    const res = await dynamodb.query(params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {
@@ -94,12 +83,10 @@ class DynamoDBInstance {
   }
 
   async putItem(params, successCallback, completeCallback) {
-    console.log(this.client)
-    const res = await this.client.put(params)
+    const res = await docClient.put(params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {
-        console.log(err)
         errNotify(`putItem Table Err`, err.message)
       })
       .on('complete', completeCallback || defaultCallback)

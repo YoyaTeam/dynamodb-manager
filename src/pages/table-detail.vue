@@ -133,9 +133,8 @@
           </el-collapse>
           <el-table :data="tableItems"
             cell-class-name="table-item"
-            height="600"
             stripe
-            style="width: 100%">
+            style="width: 100%;height:46vh;overflow:scroll">
             <el-table-column v-for="header in tableHeaders"
               :key="header"
               :prop="header"
@@ -225,6 +224,7 @@ export default {
           behindValue: ''
         }
       },
+      defaultItem: {},
       curSchemaIndex: 0,
       tableSearchTitle: '',
       showEditor: false,
@@ -317,20 +317,18 @@ export default {
   methods: {
     describeTable(tableName) {
       const table = {}
-      this.$dynamoDB.client = 'dynamodb'
       this.$dynamoDB.describeTable(tableName, res => {
         console.log(res)
         if (!res.data) {
           return
         }
         const data = res.data.Table
+        const HashKey = this.getSchemaKey(data.KeySchema, 'HASH')
+        const RangeKey = this.getSchemaKey(data.KeySchema, 'RANGE')
         this.tableSchema = data
         table['Table Name'] = data.TableName
-        table['Primary Partition Key'] = this.getSchemaKey(
-          data.KeySchema,
-          'HASH'
-        )
-        table['Primary Sort Key'] = this.getSchemaKey(data.KeySchema, 'RANGE')
+        table['Primary Partition Key'] = HashKey
+        table['Primary Sort Key'] = RangeKey
         table['Table Status'] = data.TableStatus
         table['Item Count'] = data.ItemCount
         table['Read Capacity'] = data.ProvisionedThroughput.ReadCapacityUnits
@@ -343,7 +341,11 @@ export default {
           indexName: data.TableName,
           keySchema: data.KeySchema
         })
-        console.log(data)
+        this.defaultItem = {}
+        this.defaultItem[HashKey] = ''
+        if (RangeKey) {
+          this.defaultItem[RangeKey] = ''
+        }
         if (data.GlobalSecondaryIndexes) {
           for (const key of data.GlobalSecondaryIndexes) {
             this.tableIndex.push({
@@ -423,7 +425,6 @@ export default {
         this.startIndex = 0
         this.exclusiveStartKeys = [null]
       }
-      this.$dynamoDB.client = 'dynamodb'
 
       this.$dynamoDB.scanTable(params, res => {
         type === 'prev' ? this.startIndex-- : this.startIndex++
@@ -488,7 +489,6 @@ export default {
       if (this.tableIndex[parseInt(this.schemaIndex)].type === 'Index') {
         params.IndexName = this.tableIndex[parseInt(this.schemaIndex)].indexName
       }
-      this.$dynamoDB.client = 'dynamodb'
       this.$dynamoDB.queryTable(params, res => {
         type === 'prev' ? this.startIndex-- : this.startIndex++
 
@@ -548,9 +548,8 @@ export default {
       this[this.method](type)
     },
     createItem() {
-      const data = `{"name":"czz"}`
       this.SET_SHOWEDITOR(true)
-      this.SET_TEXT(data)
+      this.SET_TEXT(this.defaultItem)
     },
     ...mapMutations({
       SET_SHOWEDITOR: 'SET_SHOWEDITOR',
