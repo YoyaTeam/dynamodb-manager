@@ -160,14 +160,14 @@
           <el-table-column prop="keySchema[0].AttributeName"
             label="Partition Key">
             <template slot-scope="scope">
-              {{ scope.row.keySchema[0].AttributeName + ' (' + getAttributeType(scope.row.keySchema[0].AttributeName) + ')' }}
+              {{ scope.row.keySchema[0].AttributeName + ' (' + getAttributeType(scope.row.keySchema[0].AttributeName,tableSchema) + ')' }}
             </template>
           </el-table-column>
           <el-table-column prop="keySchema[1].AttributeName"
             label="Sort Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[1].AttributeName }}
-              <span v-show="scope.row.keySchema[1].AttributeName">({{ getAttributeType(scope.row.keySchema[1].AttributeName) }})</span>
+              <span v-show="scope.row.keySchema[1].AttributeName">({{ getAttributeType(scope.row.keySchema[1].AttributeName,tableSchema) }})</span>
             </template>
           </el-table-column>
           <el-table-column prop="projection.ProjectionType"
@@ -287,7 +287,8 @@ export default {
           type: this.tableIndex[parseInt(this.schemaIndex)]
             ? this.getAttributeType(
                 this.tableIndex[parseInt(this.schemaIndex)].keySchema[0]
-                  .AttributeName
+                  .AttributeName,
+                this.tableSchema
               )
             : '',
           calculate: '=',
@@ -305,7 +306,8 @@ export default {
             this.tableIndex[parseInt(this.schemaIndex)].keySchema[1]
               ? this.getAttributeType(
                   this.tableIndex[parseInt(this.schemaIndex)].keySchema[1]
-                    .AttributeName
+                    .AttributeName,
+                  this.tableSchema
                 )
               : '',
           calculate: '=',
@@ -325,10 +327,12 @@ export default {
         const data = res.data.Table
         const HashKey = this.getSchemaKey(data.KeySchema, 'HASH')
         const RangeKey = this.getSchemaKey(data.KeySchema, 'RANGE')
+        const HashType = this.getAttributeType(HashKey, data)
+        const RangeType = RangeKey ? this.getAttributeType(RangeKey, data) : ''
         this.tableSchema = data
         table['Table Name'] = data.TableName
-        table['Primary Partition Key'] = HashKey
-        table['Primary Sort Key'] = RangeKey
+        table['Primary Partition Key'] = `${HashKey} (${HashType})`
+        table['Primary Sort Key'] = `${RangeKey} (${RangeType})`
         table['Table Status'] = data.TableStatus
         table['Item Count'] = data.ItemCount
         table['Read Capacity'] = data.ProvisionedThroughput.ReadCapacityUnits
@@ -342,9 +346,9 @@ export default {
           keySchema: data.KeySchema
         })
         this.defaultItem = {}
-        this.defaultItem[HashKey] = ''
+        this.defaultItem[HashKey] = HashType === 'S' ? '' : 0
         if (RangeKey) {
-          this.defaultItem[RangeKey] = ''
+          this.defaultItem[RangeKey] = RangeType === 'S' ? '' : 0
         }
         if (data.GlobalSecondaryIndexes) {
           for (const key of data.GlobalSecondaryIndexes) {
@@ -400,8 +404,8 @@ export default {
       }
       return range ? `${hash}, ${range}` : hash
     },
-    getAttributeType(attributeName) {
-      for (const item of this.tableSchema.AttributeDefinitions) {
+    getAttributeType(attributeName, data) {
+      for (const item of data.AttributeDefinitions) {
         if (item.AttributeName === attributeName) {
           return item.AttributeType
         }
