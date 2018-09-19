@@ -132,6 +132,7 @@
             </el-collapse-item>
           </el-collapse>
           <el-table :data="tableItems"
+            @cell-click="editItem"
             cell-class-name="table-item"
             stripe
             style="width: 100%;height:46vh;overflow:scroll">
@@ -186,7 +187,7 @@
 <script>
 import { mapMutations } from 'vuex'
 const LIMIT = 100
-const TYPES = ['L', 'S', 'N', 'B', 'SS', 'NS', 'BS', 'M', 'NULL', 'BOOL']
+// const TYPES = ['L', 'S', 'N', 'B', 'SS', 'NS', 'BS', 'M', 'NULL', 'BOOL']
 const QUERY_TYPES = ['=', '<', '<=', '>', '>=', 'BETWEEN']
 
 export default {
@@ -320,7 +321,6 @@ export default {
     describeTable(tableName) {
       const table = {}
       this.$dynamoDB.describeTable(tableName, res => {
-        console.log(res)
         if (!res.data) {
           return
         }
@@ -346,9 +346,9 @@ export default {
           keySchema: data.KeySchema
         })
         this.defaultItem = {}
-        this.defaultItem[HashKey] = HashType === 'S' ? '' : 0
+        this.defaultItem[HashKey] = HashType === 'N' ? 0 : ''
         if (RangeKey) {
-          this.defaultItem[RangeKey] = RangeType === 'S' ? '' : 0
+          this.defaultItem[RangeKey] = RangeType === 'N' ? 0 : ''
         }
         if (data.GlobalSecondaryIndexes) {
           for (const key of data.GlobalSecondaryIndexes) {
@@ -444,7 +444,7 @@ export default {
       })
       this.updateTableSearchTitle()
     },
-    async query(type) {
+    async dynamodbQuery(type) {
       const validResult = await this.$refs.itemSearch.validate()
       if (!validResult) {
         return
@@ -507,11 +507,74 @@ export default {
       })
       this.updateTableSearchTitle()
     },
+    // doc client query
+    async query(type) {
+      const validResult = await this.$refs.itemSearch.validate()
+      if (!validResult) {
+        return
+      }
+      const index = type === 'next' ? this.startIndex : this.startIndex - 2
+
+      const params = {
+        TableName: this.tableName,
+        // IndexName: this.tableIndex[parseInt(this.schemaIndex)].indexName,
+        KeyConditionExpression: '#hk = :hkey',
+        ExpressionAttributeNames: {
+          '#hk': this.itemSearch.hk.name
+        },
+        ExpressionAttributeValues: {
+          ':hkey': parseInt(this.itemSearch.hk.value)
+        },
+        Limit: this.limit
+      }
+      if (this.exclusiveStartKeys.length > 0 && index >= 0) {
+        params.ExclusiveStartKey = this.exclusiveStartKeys[index]
+      }
+      if (index < 0) {
+        this.startIndex = 0
+        this.exclusiveStartKeys = [null]
+      }
+
+      if (this.itemSearch.rk.value) {
+        params.KeyConditionExpression += ` and #rk ${
+          this.itemSearch.rk.calculate
+        } :rkv`
+        params.ExpressionAttributeNames['#rk'] = this.itemSearch.rk.name
+
+        const rkv = {}
+        rkv[this.itemSearch.rk.type] = this.itemSearch.rk.value
+        params.ExpressionAttributeValues[':rkv'] = rkv
+        if (this.itemSearch.rk.calculate === 'BETWEEN') {
+          params.KeyConditionExpression += ' and :rkv2'
+          const rkv2 = {}
+          rkv2[this.itemSearch.rk.type] = this.itemSearch.rk.behindValue
+          params.ExpressionAttributeValues[':rkv2'] = rkv2
+        }
+      }
+      if (this.tableIndex[parseInt(this.schemaIndex)].type === 'Index') {
+        params.IndexName = this.tableIndex[parseInt(this.schemaIndex)].indexName
+      }
+      console.log(params)
+      this.$dynamoDB.queryTable(params, res => {
+        type === 'prev' ? this.startIndex-- : this.startIndex++
+
+        this.exclusiveStartKeys.splice(
+          this.startIndex,
+          1,
+          res.data.LastEvaluatedKey || null
+        )
+        this.total = res.data.Count
+        this.getTableItemsAndHeaders(res.data.Items)
+        console.log(res)
+      })
+      this.updateTableSearchTitle()
+    },
     getTableItemsAndHeaders(data) {
       this.tableItems = []
       this.tableHeaders = []
       try {
         for (const item of data) {
+          console.log(item)
           // const info = item.info.M
           let temp = {}
           this.formatItems(item, temp)
@@ -527,15 +590,21 @@ export default {
         if (this.tableHeaders.indexOf(value) === -1) {
           this.tableHeaders.push(value)
         }
-        Object.keys(data[value]).forEach(subKey => {
-          if (TYPES.indexOf(subKey) > -1) {
-            if (subKey === 'M') {
-              temp[value] = JSON.stringify(data[value][subKey])
-            } else {
-              temp[value] = data[value][subKey]
-            }
-          }
-        })
+        // eslint-disable-next-line
+        if (typeof data[value] === 'object') {
+          temp[value] = JSON.stringify(data[value])
+        } else {
+          temp[value] = data[value]
+        }
+        // Object.keys(data[value]).forEach(subKey => {
+        //   if (TYPES.indexOf(subKey) > -1) {
+        //     if (typeof subKey === 'Object') {
+        //       temp[value] = JSON.stringify(data[value][subKey])
+        //     } else {
+        //       temp[value] = data[value][subKey]
+        //     }
+        //   }
+        // })
       })
     },
     updateTableSearchTitle() {
@@ -554,6 +623,16 @@ export default {
     createItem() {
       this.SET_SHOWEDITOR(true)
       this.SET_TEXT(this.defaultItem)
+    },
+    editItem(row, column) {
+      const copyRow = JSON.parse(JSON.stringify(row))
+      for (const key in copyRow) {
+        try {
+          copyRow[key] = JSON.parse(copyRow[key])
+        } catch (e) {}
+      }
+      this.SET_SHOWEDITOR(true)
+      this.SET_TEXT(copyRow)
     },
     ...mapMutations({
       SET_SHOWEDITOR: 'SET_SHOWEDITOR',

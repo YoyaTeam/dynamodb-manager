@@ -53,6 +53,7 @@ export default {
         this.initEditor()
         return
       }
+      val = JSON.stringify(val, null, '\t')
       if (val.trim() !== '' && this.editor) {
         this.setValue(val)
       }
@@ -94,7 +95,9 @@ export default {
       }
 
       this.$dynamoDB.putItem(params, res => {
-        console.log(res)
+        this.$notify.success({
+          title: 'Put Item Success!'
+        })
       })
     },
     ...mapMutations({

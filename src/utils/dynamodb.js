@@ -60,7 +60,7 @@ class DynamoDBInstance {
   }
 
   async scanTable(params, successCallback, completeCallback) {
-    const res = await dynamodb.scan(params)
+    const res = await docClient.scan(params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {
@@ -71,7 +71,7 @@ class DynamoDBInstance {
   }
 
   async queryTable(params, successCallback, completeCallback) {
-    const res = await dynamodb.query(params)
+    const res = await docClient.query(params)
     res
       .on('success', successCallback || defaultCallback)
       .on('error', (err) => {
