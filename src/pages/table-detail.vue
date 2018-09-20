@@ -13,7 +13,7 @@
             </el-table-column>
           </el-table>
           <h2>Table Schema</h2>
-          <el-input style="margin-top:20px;" type="textarea" :rows="20" :disabled="true" v-model="tableJsonSchema">
+          <el-input style="margin-top:20px;" type="textarea" autosize :rows="10" :disabled="true" v-model="tableJsonSchema">
           </el-input>
         </div>
       </el-tab-pane>
@@ -107,7 +107,7 @@
               </el-row>
             </el-collapse-item>
           </el-collapse>
-          <el-table :data="tableItems" @selection-change="handleSelectionChange" @cell-click="editItem" cell-class-name="table-item" stripe style="width: 100%;height:46vh;overflow:scroll">
+          <el-table :data="tableItems" @selection-change="handleSelectionChange" @cell-click="editItem" cell-class-name="table-item" stripe style="width: 100%;overflow:scroll">
             <el-table-column type="selection">
             </el-table-column>
             <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" min-width="180">

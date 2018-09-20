@@ -266,6 +266,7 @@ export default {
   padding: 20px 30px;
 }
 .table-details {
+  overflow: scroll;
   position: fixed;
   right: 0;
   top: 63px;
