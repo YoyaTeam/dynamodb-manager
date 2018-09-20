@@ -4,10 +4,18 @@
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-view"></i> Overview</span>
-        <el-row style="margin-top:15px;" v-for="(value,key) in tableDetails" :gutter="40" :key="key">
-          <el-col :span="10" class="key-name">{{key}}</el-col>
-          <el-col :span="14">{{value}}</el-col>
-        </el-row>
+        <div class="basic-info">
+          <h2>Basic Info</h2>
+          <el-table :data="tableBasicInfos" style="width: 100%;margin:20px 0 30px;">
+            <el-table-column prop="key" label="Configuration Item" width="200">
+            </el-table-column>
+            <el-table-column prop="value" label="Value">
+            </el-table-column>
+          </el-table>
+          <h2>Table Schema</h2>
+          <el-input style="margin-top:20px;" type="textarea" :rows="20" :disabled="true" v-model="tableJsonSchema">
+          </el-input>
+        </div>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
@@ -206,7 +214,6 @@ export default {
   data() {
     return {
       activeNames: 'tableSearch',
-      tableDetails: {},
       tableIndex: [],
       secondIndex: [],
       tableSchema: {},
@@ -289,7 +296,8 @@ export default {
           label: 'Include',
           value: 'INCLUDE'
         }
-      ]
+      ],
+      tableBasicInfos: []
     }
   },
   created() {
@@ -298,6 +306,34 @@ export default {
   computed: {
     tableName() {
       return this.$route.params.name
+    },
+    tableJsonSchema() {
+      const obj = Utils.clone(this.tableSchema)
+      delete obj.TableStatus
+      delete obj.CreationDateTime
+      delete obj.ProvisionedThroughput.LastIncreaseDateTime
+      delete obj.ProvisionedThroughput.LastDecreaseDateTime
+      delete obj.ProvisionedThroughput.NumberOfDecreasesToday
+      delete obj.TableSizeBytes
+      delete obj.ItemCount
+      delete obj.TableArn
+      if (obj.GlobalSecondaryIndexes) {
+        obj.GlobalSecondaryIndexes.forEach((gsi) => {
+          delete gsi.IndexStatus
+          delete gsi.IndexSizeBytes
+          delete gsi.ItemCount
+          delete gsi.IndexArn
+        })
+      }
+      if (obj.LocalSecondaryIndexes) {
+        obj.LocalSecondaryIndexes.forEach((lsi) => {
+          delete lsi.IndexStatus
+          delete lsi.IndexSizeBytes
+          delete lsi.ItemCount
+          delete lsi.IndexArn
+        })
+      }
+      return JSON.stringify(obj, null, '\t')
     },
     schemaOptions() {
       const options = []
@@ -376,7 +412,6 @@ export default {
       }
     },
     describeTable(tableName) {
-      const table = {}
       this.$dynamoDB.describeTable(tableName, res => {
         if (!res.data) {
           return
@@ -387,15 +422,58 @@ export default {
         const HashType = this.getAttributeType(HashKey, data)
         const RangeType = RangeKey ? this.getAttributeType(RangeKey, data) : ''
         this.tableSchema = data
-        table['Table Name'] = data.TableName
-        table['Primary Partition Key'] = `${HashKey} (${HashType})`
-        table['Primary Sort Key'] = `${RangeKey} (${RangeType})`
-        table['Table Status'] = data.TableStatus
-        table['Item Count'] = data.ItemCount
-        table['Read Capacity'] = data.ProvisionedThroughput.ReadCapacityUnits
-        table['Write Capacity'] = data.ProvisionedThroughput.WriteCapacityUnits
-        table['Table Arm'] = data.TableArn
-        table['Table Size Bytes'] = data.TableSizeBytes
+        this.tableBasicInfos = [
+          {
+            key: 'Table name',
+            value: data.TableName
+          },
+          {
+            key: 'Primary partition key',
+            value: `${HashKey} (${HashType})`
+          },
+          {
+            key: 'Primary sort key',
+            value: Utils.isNotEmpty(RangeKey)
+              ? `${RangeKey} (${RangeType})`
+              : '-'
+          },
+          {
+            key: 'Table status',
+            value: data.TableStatus
+          },
+          {
+            key: 'Creation date',
+            value: data.CreationDateTime.toString()
+          },
+          {
+            key: 'Item count',
+            value: data.ItemCount
+          },
+          {
+            key: 'Storage size (in bytes)',
+            value: data.TableSizeBytes
+          },
+          {
+            key: 'Provisioned read capacity units',
+            value: data.ProvisionedThroughput.ReadCapacityUnits
+          },
+          {
+            key: 'Provisioned write capacity units',
+            value: data.ProvisionedThroughput.WriteCapacityUnits
+          },
+          {
+            key: 'Last decrease time',
+            value: data.ProvisionedThroughput.LastDecreaseDateTime.toString()
+          },
+          {
+            key: 'Last increase time',
+            value: data.ProvisionedThroughput.LastIncreaseDateTime.toString()
+          },
+          {
+            key: 'Table Arm',
+            value: data.TableArn
+          }
+        ]
         this.tableIndex = []
         this.tableIndex.push({
           type: 'Table',
@@ -426,7 +504,6 @@ export default {
             })
           }
         }
-        this.tableDetails = table
         this.tableHeaders = this.defaultTableHeader
       })
     },
@@ -517,7 +594,10 @@ export default {
           '#hk': this.itemSearch.hk.name
         },
         ExpressionAttributeValues: {
-          ':hkv': this.itemSearch.hk.type === 'N' ? parseInt(this.itemSearch.hk.value) : this.itemSearch.hk.value
+          ':hkv':
+            this.itemSearch.hk.type === 'N'
+              ? parseInt(this.itemSearch.hk.value)
+              : this.itemSearch.hk.value
         },
         Limit: this.limit
       }
@@ -534,10 +614,16 @@ export default {
           this.itemSearch.rk.calculate
         } :rkv`
         params.ExpressionAttributeNames['#rk'] = this.itemSearch.rk.name
-        params.ExpressionAttributeValues[':rkv'] = this.itemSearch.rk.type === 'N' ? parseInt(this.itemSearch.rk.value) : this.itemSearch.rk.value
+        params.ExpressionAttributeValues[':rkv'] =
+          this.itemSearch.rk.type === 'N'
+            ? parseInt(this.itemSearch.rk.value)
+            : this.itemSearch.rk.value
         if (this.itemSearch.rk.calculate === 'BETWEEN') {
           params.KeyConditionExpression += ' and :rkv2'
-          params.ExpressionAttributeValues[':rkv2'] = this.itemSearch.rk.type === 'N' ? parseInt(this.itemSearch.rk.behindValue) : this.itemSearch.rk.behindValue
+          params.ExpressionAttributeValues[':rkv2'] =
+            this.itemSearch.rk.type === 'N'
+              ? parseInt(this.itemSearch.rk.behindValue)
+              : this.itemSearch.rk.behindValue
         }
       }
       if (this.tableIndex[parseInt(this.schemaIndex)].type === 'Index') {
@@ -855,6 +941,13 @@ export default {
   }
   .field_value {
     opacity: 0.5;
+  }
+}
+.basic-info {
+  margin: 10px;
+
+  h2 {
+    margin-left: 10px;
   }
 }
 </style>
