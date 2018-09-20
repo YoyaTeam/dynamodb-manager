@@ -330,6 +330,14 @@ export default {
     },
     schemaOptions: function(newValue, oldValue) {
       this.schemaIndex = '0'
+      this.updateItemSearch()
+    },
+    schemaIndex: function(newValue, oldValue) {
+      this.updateItemSearch()
+    }
+  },
+  methods: {
+    updateItemSearch() {
       this.itemSearch = {
         hk: {
           name: this.tableIndex[parseInt(this.schemaIndex)]
@@ -366,9 +374,7 @@ export default {
           value: ''
         }
       }
-    }
-  },
-  methods: {
+    },
     describeTable(tableName) {
       const table = {}
       this.$dynamoDB.describeTable(tableName, res => {
