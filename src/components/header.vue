@@ -325,12 +325,7 @@ export default {
       add_table_dialogVisible: false,
       config_dialogVisible: false,
       add_index_dialogVisible: false,
-      newConfig: {
-        region: '',
-        endpoint: '',
-        accessKeyId: '',
-        secretAccessKey: ''
-      },
+      newConfig: {},
       rules: {
         region: [{ required: true, message: 'please input region' }],
         endpoint: [{ required: true, message: 'please input endpoint' }]
@@ -428,8 +423,7 @@ export default {
         this.UPDATE_REGION(localStorage.getItem('region') || this.regions[0])
       } else {
         this.endpoints = []
-        this.add_disabled = true
-        this.dialogVisible = true
+        this.openAddDatabaseDialog()
       }
     },
     handleSelect(key, keyPath) {
@@ -441,14 +435,23 @@ export default {
         localStorage.setItem('endpoint', key)
       } else if (keyPath[0] === 'setting') {
         if (keyPath[1] === 'add_database') {
-          this.add_disabled = true
-          this.dialogVisible = true
+          this.openAddDatabaseDialog()
         } else if (keyPath[1] === 'create_table') {
           this.add_table_dialogVisible = true
         } else if (keyPath[1] === 'open_config') {
           this.config_dialogVisible = true
         }
       }
+    },
+    openAddDatabaseDialog() {
+      this.newConfig = {
+        region: this.regions[0],
+        endpoint: '',
+        accessKeyId: '',
+        secretAccessKey: ''
+      }
+      this.add_disabled = true
+      this.dialogVisible = true
     },
     testConnection(config, formName) {
       this.$refs[formName].validate(valid => {

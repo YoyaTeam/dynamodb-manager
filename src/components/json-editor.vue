@@ -95,6 +95,7 @@ export default {
       }
 
       this.$dynamoDB.putItem(params, res => {
+        this.handleClose()
         this.$notify.success({
           title: 'Put Item Success!'
         })

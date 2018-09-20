@@ -4,12 +4,8 @@
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-view"></i> Overview</span>
-        <el-row style="margin-top:15px;"
-          v-for="(value,key) in tableDetails"
-          :gutter="40"
-          :key="key">
-          <el-col :span="10"
-            class="key-name">{{key}}</el-col>
+        <el-row style="margin-top:15px;" v-for="(value,key) in tableDetails" :gutter="40" :key="key">
+          <el-col :span="10" class="key-name">{{key}}</el-col>
           <el-col :span="14">{{value}}</el-col>
         </el-row>
       </el-tab-pane>
@@ -18,9 +14,8 @@
           <i class="el-icon-document"></i> Item</span>
         <div>
           <el-row style="margin:10px 0">
-            <el-button type="success"
-              plain
-              @click="createItem">Create item</el-button>
+            <el-button type="success" plain @click="createItem">Create item</el-button>
+            <el-button type="warning" plain @click="deleteItems(multipleSelection)" :disabled="multipleSelection.length === 0">Delete items</el-button>
           </el-row>
           <el-collapse v-model="activeNames">
             <el-collapse-item name="tableSearch">
@@ -28,47 +23,30 @@
                 {{ tableSearchTitle || 'Click search to scan table' }}
                 <i class="header-icon el-icon-info"></i>
                 <div class="detail-pagination">
-                  <i class="el-icon-arrow-left"
-                    v-show="startIndex > 1"
-                    @click.stop="search(false, 'prev')"></i>
+                  <i class="el-icon-arrow-left" v-show="startIndex > 1" @click.stop="search(false, 'prev')"></i>
                   <span v-show="startIndex>0">Viewing {{(startIndex -1) * limit}} to {{(startIndex-1) * limit + total}} Items</span>
-                  <i class="el-icon-arrow-right"
-                    v-show="exclusiveStartKeys.length > 0"
-                    @click.stop="search(false, 'next')"></i>
+                  <i class="el-icon-arrow-right" v-show="exclusiveStartKeys.length > 0" @click.stop="search(false, 'next')"></i>
                 </div>
               </template>
               <el-row>
                 <el-col :span="4">
                   <el-select v-model="method">
-                    <el-option label="Scan"
-                      value="scan">
+                    <el-option label="Scan" value="scan">
                     </el-option>
-                    <el-option label="Query"
-                      value="query">
+                    <el-option label="Query" value="query">
                     </el-option>
                   </el-select>
                 </el-col>
                 <el-col :span="15">
-                  <el-select v-model="schemaIndex"
-                    class="schema-select">
-                    <el-option v-for="(item,index) in schemaOptions"
-                      :key="`schema${index}`"
-                      :label="item.label"
-                      :value="item.value">
+                  <el-select v-model="schemaIndex" class="schema-select">
+                    <el-option v-for="(item,index) in schemaOptions" :key="`schema${index}`" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </el-col>
               </el-row>
               <el-row style="margin-top:10px;">
-                <el-form :model="itemSearch"
-                  :rules="itemSearchRules"
-                  ref="itemSearch"
-                  label-position="left"
-                  label-width="200px"
-                  size="mini"
-                  v-show="method === 'query' && tableIndex[parseInt(schemaIndex)]">
-                  <el-form-item label="Partition Key"
-                    prop="hk.value">
+                <el-form :model="itemSearch" :rules="itemSearchRules" ref="itemSearch" label-position="left" label-width="200px" size="mini" v-show="method === 'query' && tableIndex[parseInt(schemaIndex)]">
+                  <el-form-item label="Partition Key" prop="hk.value">
                     <el-row :gutter="10">
                       <el-col :span="4">
                         <span class="field_value">{{ itemSearch.hk.name }}</span>
@@ -84,9 +62,7 @@
                       </el-col>
                     </el-row>
                   </el-form-item>
-                  <el-form-item label="Sort Key"
-                    prop="sortKeyValue"
-                    v-show="method === 'query' && tableIndex[parseInt(schemaIndex)] && tableIndex[parseInt(schemaIndex)].keySchema[1]">
+                  <el-form-item label="Sort Key" prop="sortKeyValue" v-show="method === 'query' && tableIndex[parseInt(schemaIndex)] && tableIndex[parseInt(schemaIndex)].keySchema[1]">
                     <el-row :gutter="10">
                       <el-col :span="4">
                         <span class="field_value">{{ itemSearch.rk.name }}</span>
@@ -96,19 +72,13 @@
                       </el-col>
                       <el-col :span="3">
                         <el-select v-model="itemSearch.rk.calculate">
-                          <el-option v-for="(type,index) in queryTypes"
-                            class="field_value"
-                            :key="`query${index}`"
-                            :label="type"
-                            :value="type"></el-option>
+                          <el-option v-for="(type,index) in queryTypes" class="field_value" :key="`query${index}`" :label="type" :value="type"></el-option>
                         </el-select>
                       </el-col>
-                      <el-col :span="9"
-                        v-if="itemSearch.rk.calculate !== 'BETWEEN'">
+                      <el-col :span="9" v-if="itemSearch.rk.calculate !== 'BETWEEN'">
                         <el-input v-model="itemSearch.rk.value"></el-input>
                       </el-col>
-                      <el-col :span="9"
-                        v-else>
+                      <el-col :span="9" v-else>
                         <el-col :span="11">
                           <el-input v-model="itemSearch.rk.value"></el-input>
                         </el-col>
@@ -125,22 +95,14 @@
                 </el-form>
               </el-row>
               <el-row style="margin:10px 0">
-                <el-button type="primary"
-                  plain
-                  @click="search(true)">Search</el-button>
+                <el-button type="primary" plain @click="search(true)">Search</el-button>
               </el-row>
             </el-collapse-item>
           </el-collapse>
-          <el-table :data="tableItems"
-            @cell-click="editItem"
-            cell-class-name="table-item"
-            stripe
-            style="width: 100%;height:46vh;overflow:scroll">
-            <el-table-column v-for="header in tableHeaders"
-              :key="header"
-              :prop="header"
-              :label="header"
-              min-width="180">
+          <el-table :data="tableItems" @selection-change="handleSelectionChange" @cell-click="editItem" cell-class-name="table-item" stripe style="width: 100%;height:46vh;overflow:scroll">
+            <el-table-column type="selection">
+            </el-table-column>
+            <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" min-width="180">
             </el-table-column>
 
           </el-table>
@@ -149,43 +111,93 @@
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-sort"></i> Index</span>
-        <el-table :data="secondIndex"
-          style="width: 100%;margin-top:10px;"
-          size="mini">
-          <el-table-column prop="indexName"
-            label="Name">
+        <el-button type="success" plain @click="openAddIndexDialog('addTableIndexRuleForm')">Create Index</el-button>
+        <el-button type="warning" plain @click="deleteTableIndex(currentSelectIndex)" :disabled="deleteIndexDisabled">Delete Index</el-button>
+        <el-table :data="secondIndex" style="width: 100%;margin-top:10px;" size="mini" stripe highlight-current-row @current-change="handleIndexSelectionChange">
+          <el-table-column prop="indexName" label="Name">
           </el-table-column>
-          <el-table-column prop="indexType"
-            label="Type">
+          <el-table-column prop="indexType" label="Type">
           </el-table-column>
-          <el-table-column prop="keySchema[0].AttributeName"
-            label="Partition Key">
+          <el-table-column prop="keySchema[0].AttributeName" label="Partition Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[0].AttributeName + ' (' + getAttributeType(scope.row.keySchema[0].AttributeName,tableSchema) + ')' }}
             </template>
           </el-table-column>
-          <el-table-column prop="keySchema[1].AttributeName"
-            label="Sort Key">
+          <el-table-column prop="keySchema[1].AttributeName" label="Sort Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[1].AttributeName }}
               <span v-show="scope.row.keySchema[1].AttributeName">({{ getAttributeType(scope.row.keySchema[1].AttributeName,tableSchema) }})</span>
             </template>
           </el-table-column>
-          <el-table-column prop="projection.ProjectionType"
-            label="Projection Type">
+          <el-table-column prop="projection.ProjectionType" label="Projection Type">
           </el-table-column>
-          <el-table-column prop="indexStatus"
-            label="Index Status">
+          <el-table-column prop="indexStatus" label="Index Status">
           </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
-
+    <el-dialog id="add-index" title="Add Index" :visible.sync="table_add_index_dialogVisible" width="40%">
+      <el-form :model="newTableIndex" :rules="addTableIndexRules" ref="addTableIndexRuleForm" label-position="right" label-width="150px" size="mini">
+        <el-form-item label="Partition Key" prop="partitionKey">
+          <el-row>
+            <el-col :span="17">
+              <el-input v-model="newTableIndex.partitionKey"></el-input>
+            </el-col>
+            <el-col :span="6" :offset="1">
+              <el-select v-model="newTableIndex.partitionKeyType" placeholder="type">
+                <el-option v-for="item in dataTypes" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
+          <el-checkbox v-model="newTableIndex.hasSortKey">Add sort key</el-checkbox>
+        </el-form-item>
+        <el-form-item label="Sort Key" prop="sortKey" v-show="newTableIndex.hasSortKey">
+          <el-row>
+            <el-col :span="17">
+              <el-input v-model="newTableIndex.sortKey"></el-input>
+            </el-col>
+            <el-col :span="6" :offset="1">
+              <el-select v-model="newTableIndex.sortKeyType" placeholder="type">
+                <el-option v-for="item in dataTypes" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="Index Name" prop="indexName">
+          <el-row>
+            <el-col :span="17">
+              <el-input v-model="newTableIndex.indexName"></el-input>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="Projected Attributes" prop="projectionType">
+          <el-row>
+            <el-col :span="17">
+              <el-select v-model="newTableIndex.projectionType" placeholder="type">
+                <el-option v-for="item in projectionTypes" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
+          <el-checkbox v-model="newTableIndex.indexType" true-label="LSI" false-label="GSI" disabled>Create as Local Secondary Index</el-checkbox>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="addTableIndex(newTableIndex, 'addTableIndexRuleForm')">Add</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
+import Utils from '@/utils/utils'
 const LIMIT = 100
 // const TYPES = ['L', 'S', 'N', 'B', 'SS', 'NS', 'BS', 'M', 'NULL', 'BOOL']
 const QUERY_TYPES = ['=', '<', '<=', '>', '>=', 'BETWEEN']
@@ -229,7 +241,55 @@ export default {
       curSchemaIndex: 0,
       tableSearchTitle: '',
       showEditor: false,
-      editorData: ''
+      editorData: '',
+      multipleSelection: [],
+      table_add_index_dialogVisible: false,
+      newTableIndex: {
+        partitionKey: '',
+        partitionKeyType: 'S',
+        hasSortKey: false,
+        sortKey: '',
+        sortKeyType: 'S',
+        indexName: '',
+        projectionType: 'ALL',
+        nonKeyAttributes: [],
+        indexType: 'GSI'
+      },
+      addTableIndexRules: {
+        partitionKey: [
+          { required: true, message: 'please input partition key' }
+        ],
+        indexName: [{ required: true, message: 'please input index name' }]
+      },
+      currentSelectIndex: '',
+      dataTypes: [
+        {
+          label: 'String',
+          value: 'S'
+        },
+        {
+          label: 'Binary',
+          value: 'B'
+        },
+        {
+          label: 'Numble',
+          value: 'N'
+        }
+      ],
+      projectionTypes: [
+        {
+          label: 'All',
+          value: 'ALL'
+        },
+        {
+          label: 'Keys only',
+          value: 'KEYS_ONLY'
+        },
+        {
+          label: 'Include',
+          value: 'INCLUDE'
+        }
+      ]
     }
   },
   created() {
@@ -249,36 +309,27 @@ export default {
           value: index
         })
       }
-      // }
-      // if (this.tableSchema.primary.length > 0) {
-      //   const key = this.getSchemaOption(this.tableSchema.primary)
-      //   options.push({
-      //     label: `[Table] ${this.tableName}: ${key}`,
-      //     value: 'primary'
-      //   })
-      // }
-      // if (this.tableSchema && this.tableSchema.index.length > 0) {
-      //   for (const item of this.tableSchema.index) {
-      //     const key = this.getSchemaOption(item.value)
-      //     options.push({
-      //       label: `[index] ${item.name}: ${key}`,
-      //       value: item.name
-      //     })
-      //   }
-      // }
-      // this.schema = options[0]
       return options
+    },
+    defaultTableHeader() {
+      const header = []
+      for (var key in this.defaultItem) {
+        header.push(key)
+      }
+      return header
+    },
+    deleteIndexDisabled() {
+      return Utils.isEmpty(this.currentSelectIndex)
     }
   },
   watch: {
     tableName(val) {
+      console.log('table change')
       this.describeTable(val)
       this.tableItems = []
     },
     schemaOptions: function(newValue, oldValue) {
       this.schemaIndex = '0'
-    },
-    schemaIndex: function(newValue, oldValue) {
       this.itemSearch = {
         hk: {
           name: this.tableIndex[parseInt(this.schemaIndex)]
@@ -339,7 +390,7 @@ export default {
         table['Write Capacity'] = data.ProvisionedThroughput.WriteCapacityUnits
         table['Table Arm'] = data.TableArn
         table['Table Size Bytes'] = data.TableSizeBytes
-
+        this.tableIndex = []
         this.tableIndex.push({
           type: 'Table',
           indexName: data.TableName,
@@ -350,6 +401,7 @@ export default {
         if (RangeKey) {
           this.defaultItem[RangeKey] = RangeType === 'N' ? 0 : ''
         }
+        this.secondIndex = []
         if (data.GlobalSecondaryIndexes) {
           for (const key of data.GlobalSecondaryIndexes) {
             this.tableIndex.push({
@@ -368,8 +420,8 @@ export default {
             })
           }
         }
-        console.log(this.itemSearch)
         this.tableDetails = table
+        this.tableHeaders = this.defaultTableHeader
       })
     },
     getSchemaKey(keySchema, keyType) {
@@ -444,69 +496,6 @@ export default {
       })
       this.updateTableSearchTitle()
     },
-    async dynamodbQuery(type) {
-      const validResult = await this.$refs.itemSearch.validate()
-      if (!validResult) {
-        return
-      }
-      const hkv = {}
-      const index = type === 'next' ? this.startIndex : this.startIndex - 2
-
-      hkv[this.itemSearch.hk.type] = this.itemSearch.hk.value
-      const params = {
-        TableName: this.tableName,
-        // IndexName: this.tableIndex[parseInt(this.schemaIndex)].indexName,
-        KeyConditionExpression: '#hk = :hkv',
-        ExpressionAttributeNames: {
-          '#hk': this.itemSearch.hk.name
-        },
-        ExpressionAttributeValues: {
-          ':hkv': hkv
-        },
-        Limit: this.limit
-      }
-
-      if (this.exclusiveStartKeys.length > 0 && index >= 0) {
-        params.ExclusiveStartKey = this.exclusiveStartKeys[index]
-      }
-      if (index < 0) {
-        this.startIndex = 0
-        this.exclusiveStartKeys = [null]
-      }
-
-      if (this.itemSearch.rk.value) {
-        params.KeyConditionExpression += ` and #rk ${
-          this.itemSearch.rk.calculate
-        } :rkv`
-        params.ExpressionAttributeNames['#rk'] = this.itemSearch.rk.name
-
-        const rkv = {}
-        rkv[this.itemSearch.rk.type] = this.itemSearch.rk.value
-        params.ExpressionAttributeValues[':rkv'] = rkv
-        if (this.itemSearch.rk.calculate === 'BETWEEN') {
-          params.KeyConditionExpression += ' and :rkv2'
-          const rkv2 = {}
-          rkv2[this.itemSearch.rk.type] = this.itemSearch.rk.behindValue
-          params.ExpressionAttributeValues[':rkv2'] = rkv2
-        }
-      }
-      if (this.tableIndex[parseInt(this.schemaIndex)].type === 'Index') {
-        params.IndexName = this.tableIndex[parseInt(this.schemaIndex)].indexName
-      }
-      this.$dynamoDB.queryTable(params, res => {
-        type === 'prev' ? this.startIndex-- : this.startIndex++
-
-        this.exclusiveStartKeys.splice(
-          this.startIndex,
-          1,
-          res.data.LastEvaluatedKey || null
-        )
-        this.total = res.data.Count
-        this.getTableItemsAndHeaders(res.data.Items)
-        console.log(res)
-      })
-      this.updateTableSearchTitle()
-    },
     // doc client query
     async query(type) {
       const validResult = await this.$refs.itemSearch.validate()
@@ -514,16 +503,15 @@ export default {
         return
       }
       const index = type === 'next' ? this.startIndex : this.startIndex - 2
-
+      console.log(this.itemSearch)
       const params = {
         TableName: this.tableName,
-        // IndexName: this.tableIndex[parseInt(this.schemaIndex)].indexName,
-        KeyConditionExpression: '#hk = :hkey',
+        KeyConditionExpression: '#hk = :hkv',
         ExpressionAttributeNames: {
           '#hk': this.itemSearch.hk.name
         },
         ExpressionAttributeValues: {
-          ':hkey': parseInt(this.itemSearch.hk.value)
+          ':hkv': this.itemSearch.hk.type === 'N' ? parseInt(this.itemSearch.hk.value) : this.itemSearch.hk.value
         },
         Limit: this.limit
       }
@@ -540,15 +528,10 @@ export default {
           this.itemSearch.rk.calculate
         } :rkv`
         params.ExpressionAttributeNames['#rk'] = this.itemSearch.rk.name
-
-        const rkv = {}
-        rkv[this.itemSearch.rk.type] = this.itemSearch.rk.value
-        params.ExpressionAttributeValues[':rkv'] = rkv
+        params.ExpressionAttributeValues[':rkv'] = this.itemSearch.rk.type === 'N' ? parseInt(this.itemSearch.rk.value) : this.itemSearch.rk.value
         if (this.itemSearch.rk.calculate === 'BETWEEN') {
           params.KeyConditionExpression += ' and :rkv2'
-          const rkv2 = {}
-          rkv2[this.itemSearch.rk.type] = this.itemSearch.rk.behindValue
-          params.ExpressionAttributeValues[':rkv2'] = rkv2
+          params.ExpressionAttributeValues[':rkv2'] = this.itemSearch.rk.type === 'N' ? parseInt(this.itemSearch.rk.behindValue) : this.itemSearch.rk.behindValue
         }
       }
       if (this.tableIndex[parseInt(this.schemaIndex)].type === 'Index') {
@@ -571,7 +554,7 @@ export default {
     },
     getTableItemsAndHeaders(data) {
       this.tableItems = []
-      this.tableHeaders = []
+      this.tableHeaders = this.defaultTableHeader
       try {
         for (const item of data) {
           console.log(item)
@@ -633,6 +616,202 @@ export default {
       }
       this.SET_SHOWEDITOR(true)
       this.SET_TEXT(copyRow)
+    },
+    deleteItems(rows) {
+      if (rows.length <= 0) {
+        return
+      }
+      this.$confirm(
+        '<i style="color: teal">' +
+          rows.length +
+          '</i> items selected, you want to delete ?',
+        'Confirm',
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: 'Yes, delete it',
+          cancelButtonText: 'Cancel',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          rows.forEach(row => {
+            const key = {}
+            key[this.itemSearch.hk.name] = row[this.itemSearch.hk.name]
+            if (this.itemSearch.rk.name) {
+              key[this.itemSearch.rk.name] = row[this.itemSearch.rk.name]
+            }
+            var params = {
+              TableName: this.tableName,
+              Key: key
+            }
+            this.$dynamoDB.deleteItem(params)
+          })
+          this.$message({
+            type: 'success',
+            message: 'delete items success!'
+          })
+          this.search(true)
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Cancelled'
+          })
+        })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(this.multipleSelection.length === 0)
+    },
+    handleIndexSelectionChange(val) {
+      this.currentSelectIndex = val
+    },
+    openAddIndexDialog(formName) {
+      this.table_add_index_dialogVisible = true
+      if (this.$refs[formName]) {
+        this.$refs[formName].resetFields()
+      }
+    },
+    validAndAddAttributeDefinitions(
+      attributeDefinitions,
+      attributeName,
+      attributeType
+    ) {
+      for (var attributeDefinition of attributeDefinitions) {
+        if (
+          attributeDefinition.AttributeName === attributeName &&
+          attributeDefinition.AttributeType !== attributeType
+        ) {
+          this.$message({
+            message:
+              ' Type of ' +
+              attributeName +
+              ' does not match existing data type',
+            type: 'warning'
+          })
+          return false
+        }
+      }
+      attributeDefinitions.push({
+        AttributeName: attributeName,
+        AttributeType: attributeType
+      })
+    },
+    deleteTableIndex(tableIndex) {
+      this.$prompt(
+        'please input the index name <i style="color: teal">' +
+          tableIndex.indexName +
+          '</i> you want delete',
+        'Confirm',
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: 'Yes, delete it',
+          cancelButtonText: 'Cancle'
+        }
+      )
+        .then(({ value }) => {
+          if (value !== tableIndex.indexName) {
+            this.$message({
+              type: 'warning',
+              message: 'the index name is wrong, delete cancle!'
+            })
+            return
+          }
+          var params = {
+            TableName: this.tableName,
+            GlobalSecondaryIndexUpdates: [
+              {
+                Delete: {
+                  IndexName: tableIndex.indexName
+                }
+              }
+            ]
+          }
+          this.$dynamoDB.updateTable(params, res => {
+            this.$message({
+              message: 'Delete index success!',
+              type: 'success'
+            })
+            this.table_add_index_dialogVisible = false
+            this.describeTable(this.tableName)
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Cancelled'
+          })
+        })
+    },
+    addTableIndex(tableIndex, formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          var attributeDefinitions = Utils.clone(
+            this.tableSchema.AttributeDefinitions
+          )
+          if (
+            this.validAndAddAttributeDefinitions(
+              attributeDefinitions,
+              tableIndex.partitionKey,
+              tableIndex.partitionKeyType
+            )
+          ) {
+            return
+          }
+          var keySchema = [
+            {
+              AttributeName: tableIndex.partitionKey,
+              KeyType: 'HASH'
+            }
+          ]
+          if (tableIndex.hasSortKey && Utils.isNotEmpty(tableIndex.sortKey)) {
+            if (
+              this.validAndAddAttributeDefinitions(
+                attributeDefinitions,
+                tableIndex.sortKey,
+                tableIndex.sortKeyType
+              )
+            ) {
+              return
+            }
+            keySchema.push({
+              AttributeName: tableIndex.sortKey,
+              KeyType: 'RANGE'
+            })
+          }
+          var params = {
+            TableName: this.tableName,
+            AttributeDefinitions: attributeDefinitions,
+            GlobalSecondaryIndexUpdates: [
+              {
+                Create: {
+                  IndexName: tableIndex.indexName,
+                  KeySchema: keySchema,
+                  Projection: {
+                    // NonKeyAttributes: [],
+                    ProjectionType: tableIndex.projectionType
+                  },
+                  ProvisionedThroughput: {
+                    ReadCapacityUnits: 5,
+                    WriteCapacityUnits: 5
+                  }
+                }
+              }
+            ]
+          }
+          console.log(params)
+          this.$dynamoDB.updateTable(params, res => {
+            this.$message({
+              message: 'Add index success!',
+              type: 'success'
+            })
+            this.table_add_index_dialogVisible = false
+            this.describeTable(this.tableName)
+          })
+        } else {
+          return false
+        }
+      })
     },
     ...mapMutations({
       SET_SHOWEDITOR: 'SET_SHOWEDITOR',

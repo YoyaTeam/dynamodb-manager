@@ -92,6 +92,28 @@ class DynamoDBInstance {
       .on('complete', completeCallback || defaultCallback)
       .send()
   }
+
+  async deleteItem(params, successCallback, completeCallback) {
+    const res = await docClient.delete(params)
+    res
+      .on('success', successCallback || defaultCallback)
+      .on('error', (err) => {
+        errNotify(`Delete Item Err`, err.message)
+      })
+      .on('complete', completeCallback || defaultCallback)
+      .send()
+  }
+
+  async updateTable(params, successCallback, completeCallback) {
+    const res = await dynamodb.updateTable(params)
+    res
+      .on('success', successCallback || defaultCallback)
+      .on('error', (err) => {
+        errNotify(`update table Err`, err.message)
+      })
+      .on('complete', completeCallback || defaultCallback)
+      .send()
+  }
 }
 
 export default DynamoDBInstance
