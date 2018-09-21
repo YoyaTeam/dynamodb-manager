@@ -32,7 +32,7 @@
           <el-table-column prop="tableName"
             label="Table Name">
             <template slot-scope="scope">
-              <span class="cursor-pointer"
+              <span class="table-name"
                 @click="showDetails(scope.row.tableName)">{{ scope.row.tableName }}</span>
             </template>
           </el-table-column>
@@ -74,16 +74,18 @@
       </div>
     </transition>
     <json-editor :tableName="tableName"></json-editor>
+    <index-dialog :tableName="tableName"></index-dialog>
   </div>
 </template>
 
 <script>
 import JsonEditor from '@/components/json-editor'
+import IndexDialog from '@/components/index-dialog'
 import Utils from '@/utils/utils'
 const AWS = require('aws-sdk')
 const dynamodb = new AWS.DynamoDB()
 export default {
-  components: { JsonEditor },
+  components: { JsonEditor, IndexDialog },
   data() {
     return {
       tables: [],
@@ -238,7 +240,6 @@ export default {
     },
     handleCurrentChange(val) {
       this.selectTable = val
-      this.controlTableDetails = true
     },
     handleMouseDown(e) {
       this.pageX = e.pageX
@@ -262,19 +263,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~styles/variable';
 .main {
   padding: 20px 30px;
+  .table-name {
+    cursor: pointer;
+    color: $primary;
+  }
 }
 .table-details {
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 63px;
-  bottom: 0;
+  min-height: 100vh;
   z-index: 100;
   background: #fff;
   .drag-part {
     position: absolute;
-    height: 100%;
+    top: 0;
+    left: 0px;
+    bottom: 0;
     width: 3px;
     background: black;
     cursor: ew-resize;
@@ -299,7 +307,8 @@ export default {
   transition: all 0.3s ease;
 }
 .slide-fade-leave-active {
-  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
+  bottom: 0;
+  transition: all 0.6s ease;
 }
 .slide-fade-enter,
 .slide-fade-leave-to {

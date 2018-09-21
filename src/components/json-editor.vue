@@ -37,7 +37,6 @@ export default {
   },
   computed: {
     ...mapGetters({
-      awsConfig: 'config',
       showEditor: 'showEditor',
       editorText: 'text'
     })

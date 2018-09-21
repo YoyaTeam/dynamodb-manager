@@ -6,14 +6,22 @@
           <i class="el-icon-view"></i> Overview</span>
         <div class="basic-info">
           <h2>Basic Info</h2>
-          <el-table :data="tableBasicInfos" style="width: 100%;margin:20px 0 30px;">
-            <el-table-column prop="key" label="Configuration Item" width="200">
+          <el-table :data="tableBasicInfos"
+            style="width: 100%;margin:20px 0 30px;">
+            <el-table-column prop="key"
+              label="Configuration Item"
+              width="200">
             </el-table-column>
-            <el-table-column prop="value" label="Value">
+            <el-table-column prop="value"
+              label="Value">
             </el-table-column>
           </el-table>
           <h2>Table Schema</h2>
-          <el-input style="margin-top:20px;" type="textarea" :rows="20" :disabled="true" v-model="tableJsonSchema">
+          <el-input style="margin-top:20px;"
+            type="textarea"
+            :rows="20"
+            :disabled="true"
+            v-model="tableJsonSchema">
           </el-input>
         </div>
       </el-tab-pane>
@@ -22,8 +30,13 @@
           <i class="el-icon-document"></i> Item</span>
         <div>
           <el-row style="margin:10px 0">
-            <el-button type="success" plain @click="createItem">Create item</el-button>
-            <el-button type="warning" plain @click="deleteItems(multipleSelection)" :disabled="multipleSelection.length === 0">Delete items</el-button>
+            <el-button type="success"
+              plain
+              @click="createItem">Create item</el-button>
+            <el-button type="warning"
+              plain
+              @click="deleteItems(multipleSelection)"
+              :disabled="multipleSelection.length === 0">Delete items</el-button>
           </el-row>
           <el-collapse v-model="activeNames">
             <el-collapse-item name="tableSearch">
@@ -31,30 +44,47 @@
                 {{ tableSearchTitle || 'Click search to scan table' }}
                 <i class="header-icon el-icon-info"></i>
                 <div class="detail-pagination">
-                  <i class="el-icon-arrow-left" v-show="startIndex > 1" @click.stop="search(false, 'prev')"></i>
+                  <i class="el-icon-arrow-left"
+                    v-show="startIndex > 1"
+                    @click.stop="search(false, 'prev')"></i>
                   <span v-show="startIndex>0">Viewing {{(startIndex -1) * limit}} to {{(startIndex-1) * limit + total}} Items</span>
-                  <i class="el-icon-arrow-right" v-show="exclusiveStartKeys.length > 0" @click.stop="search(false, 'next')"></i>
+                  <i class="el-icon-arrow-right"
+                    v-show="exclusiveStartKeys.length > 0"
+                    @click.stop="search(false, 'next')"></i>
                 </div>
               </template>
               <el-row>
                 <el-col :span="4">
                   <el-select v-model="method">
-                    <el-option label="Scan" value="scan">
+                    <el-option label="Scan"
+                      value="scan">
                     </el-option>
-                    <el-option label="Query" value="query">
+                    <el-option label="Query"
+                      value="query">
                     </el-option>
                   </el-select>
                 </el-col>
                 <el-col :span="15">
-                  <el-select v-model="schemaIndex" class="schema-select">
-                    <el-option v-for="(item,index) in schemaOptions" :key="`schema${index}`" :label="item.label" :value="item.value">
+                  <el-select v-model="schemaIndex"
+                    class="schema-select">
+                    <el-option v-for="(item,index) in schemaOptions"
+                      :key="`schema${index}`"
+                      :label="item.label"
+                      :value="item.value">
                     </el-option>
                   </el-select>
                 </el-col>
               </el-row>
               <el-row style="margin-top:10px;">
-                <el-form :model="itemSearch" :rules="itemSearchRules" ref="itemSearch" label-position="left" label-width="200px" size="mini" v-show="method === 'query' && tableIndex[parseInt(schemaIndex)]">
-                  <el-form-item label="Partition Key" prop="hk.value">
+                <el-form :model="itemSearch"
+                  :rules="itemSearchRules"
+                  ref="itemSearch"
+                  label-position="left"
+                  label-width="200px"
+                  size="mini"
+                  v-show="method === 'query' && tableIndex[parseInt(schemaIndex)]">
+                  <el-form-item label="Partition Key"
+                    prop="hk.value">
                     <el-row :gutter="10">
                       <el-col :span="4">
                         <span class="field_value">{{ itemSearch.hk.name }}</span>
@@ -70,7 +100,9 @@
                       </el-col>
                     </el-row>
                   </el-form-item>
-                  <el-form-item label="Sort Key" prop="sortKeyValue" v-show="method === 'query' && tableIndex[parseInt(schemaIndex)] && tableIndex[parseInt(schemaIndex)].keySchema[1]">
+                  <el-form-item label="Sort Key"
+                    prop="sortKeyValue"
+                    v-show="method === 'query' && tableIndex[parseInt(schemaIndex)] && tableIndex[parseInt(schemaIndex)].keySchema[1]">
                     <el-row :gutter="10">
                       <el-col :span="4">
                         <span class="field_value">{{ itemSearch.rk.name }}</span>
@@ -80,13 +112,19 @@
                       </el-col>
                       <el-col :span="3">
                         <el-select v-model="itemSearch.rk.calculate">
-                          <el-option v-for="(type,index) in queryTypes" class="field_value" :key="`query${index}`" :label="type" :value="type"></el-option>
+                          <el-option v-for="(type,index) in queryTypes"
+                            class="field_value"
+                            :key="`query${index}`"
+                            :label="type"
+                            :value="type"></el-option>
                         </el-select>
                       </el-col>
-                      <el-col :span="9" v-if="itemSearch.rk.calculate !== 'BETWEEN'">
+                      <el-col :span="9"
+                        v-if="itemSearch.rk.calculate !== 'BETWEEN'">
                         <el-input v-model="itemSearch.rk.value"></el-input>
                       </el-col>
-                      <el-col :span="9" v-else>
+                      <el-col :span="9"
+                        v-else>
                         <el-col :span="11">
                           <el-input v-model="itemSearch.rk.value"></el-input>
                         </el-col>
@@ -103,14 +141,25 @@
                 </el-form>
               </el-row>
               <el-row style="margin:10px 0">
-                <el-button type="primary" plain @click="search(true)">Search</el-button>
+                <el-button type="primary"
+                  plain
+                  @click="search(true)">Search</el-button>
               </el-row>
             </el-collapse-item>
           </el-collapse>
-          <el-table :data="tableItems" @selection-change="handleSelectionChange" @cell-click="editItem" cell-class-name="table-item" stripe style="width: 100%;height:46vh;overflow:scroll">
+          <el-table :data="tableItems"
+            @selection-change="handleSelectionChange"
+            @cell-click="editItem"
+            cell-class-name="table-item"
+            stripe
+            style="width: 100%;height:46vh;overflow:scroll">
             <el-table-column type="selection">
             </el-table-column>
-            <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" min-width="180">
+            <el-table-column v-for="header in tableHeaders"
+              :key="header"
+              :prop="header"
+              :label="header"
+              min-width="180">
             </el-table-column>
 
           </el-table>
@@ -119,92 +168,54 @@
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-sort"></i> Index</span>
-        <el-button type="success" plain @click="openAddIndexDialog('addTableIndexRuleForm')">Create Index</el-button>
-        <el-button type="warning" plain @click="deleteTableIndex(currentSelectIndex)" :disabled="deleteIndexDisabled">Delete Index</el-button>
-        <el-table :data="secondIndex" style="width: 100%;margin-top:10px;" size="mini" stripe highlight-current-row @current-change="handleIndexSelectionChange">
-          <el-table-column prop="indexName" label="Name">
+        <el-button type="success"
+          plain
+          @click="openAddIndexDialog('addTableIndexRuleForm')">Create Index</el-button>
+        <el-button type="warning"
+          plain
+          @click="deleteTableIndex(currentSelectIndex)"
+          :disabled="deleteIndexDisabled">Delete Index</el-button>
+        <el-table :data="secondIndex"
+          v-if="secondIndex.length >0"
+          style="width: 100%;margin-top:10px;"
+          size="mini"
+          stripe
+          highlight-current-row
+          @current-change="handleIndexSelectionChange">
+          <el-table-column prop="indexName"
+            label="Name">
           </el-table-column>
-          <el-table-column prop="indexType" label="Type">
+          <el-table-column prop="indexType"
+            label="Type">
           </el-table-column>
-          <el-table-column prop="keySchema[0].AttributeName" label="Partition Key">
+          <el-table-column prop="keySchema[0].AttributeName"
+            label="Partition Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[0].AttributeName + ' (' + getAttributeType(scope.row.keySchema[0].AttributeName,tableSchema) + ')' }}
             </template>
           </el-table-column>
-          <el-table-column prop="keySchema[1].AttributeName" label="Sort Key">
+          <el-table-column v-if="secondIndex.keySchema && secondIndex.keySchema.length > 1"
+            prop="keySchema[1].AttributeName"
+            label="Sort Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[1].AttributeName }}
               <span v-show="scope.row.keySchema[1].AttributeName">({{ getAttributeType(scope.row.keySchema[1].AttributeName,tableSchema) }})</span>
             </template>
           </el-table-column>
-          <el-table-column prop="projection.ProjectionType" label="Projection Type">
+          <el-table-column prop="projection.ProjectionType"
+            label="Projection Type">
           </el-table-column>
-          <el-table-column prop="indexStatus" label="Index Status">
+          <el-table-column prop="indexStatus"
+            label="Index Status">
           </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
-    <el-dialog id="add-index" title="Add Index" :visible.sync="table_add_index_dialogVisible" width="40%">
-      <el-form :model="newTableIndex" :rules="addTableIndexRules" ref="addTableIndexRuleForm" label-position="right" label-width="150px" size="mini">
-        <el-form-item label="Partition Key" prop="partitionKey">
-          <el-row>
-            <el-col :span="17">
-              <el-input v-model="newTableIndex.partitionKey"></el-input>
-            </el-col>
-            <el-col :span="6" :offset="1">
-              <el-select v-model="newTableIndex.partitionKeyType" placeholder="type">
-                <el-option v-for="item in dataTypes" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
-          <el-checkbox v-model="newTableIndex.hasSortKey">Add sort key</el-checkbox>
-        </el-form-item>
-        <el-form-item label="Sort Key" prop="sortKey" v-show="newTableIndex.hasSortKey">
-          <el-row>
-            <el-col :span="17">
-              <el-input v-model="newTableIndex.sortKey"></el-input>
-            </el-col>
-            <el-col :span="6" :offset="1">
-              <el-select v-model="newTableIndex.sortKeyType" placeholder="type">
-                <el-option v-for="item in dataTypes" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="Index Name" prop="indexName">
-          <el-row>
-            <el-col :span="17">
-              <el-input v-model="newTableIndex.indexName"></el-input>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item label="Projected Attributes" prop="projectionType">
-          <el-row>
-            <el-col :span="17">
-              <el-select v-model="newTableIndex.projectionType" placeholder="type">
-                <el-option v-for="item in projectionTypes" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
-        </el-form-item>
-        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
-          <el-checkbox v-model="newTableIndex.indexType" true-label="LSI" false-label="GSI" disabled>Create as Local Secondary Index</el-checkbox>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="addTableIndex(newTableIndex, 'addTableIndexRuleForm')">Add</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 import Utils from '@/utils/utils'
 const LIMIT = 100
 // const TYPES = ['L', 'S', 'N', 'B', 'SS', 'NS', 'BS', 'M', 'NULL', 'BOOL']
@@ -250,53 +261,7 @@ export default {
       showEditor: false,
       editorData: '',
       multipleSelection: [],
-      table_add_index_dialogVisible: false,
-      newTableIndex: {
-        partitionKey: '',
-        partitionKeyType: 'S',
-        hasSortKey: false,
-        sortKey: '',
-        sortKeyType: 'S',
-        indexName: '',
-        projectionType: 'ALL',
-        nonKeyAttributes: [],
-        indexType: 'GSI'
-      },
-      addTableIndexRules: {
-        partitionKey: [
-          { required: true, message: 'please input partition key' }
-        ],
-        indexName: [{ required: true, message: 'please input index name' }]
-      },
       currentSelectIndex: '',
-      dataTypes: [
-        {
-          label: 'String',
-          value: 'S'
-        },
-        {
-          label: 'Binary',
-          value: 'B'
-        },
-        {
-          label: 'Numble',
-          value: 'N'
-        }
-      ],
-      projectionTypes: [
-        {
-          label: 'All',
-          value: 'ALL'
-        },
-        {
-          label: 'Keys only',
-          value: 'KEYS_ONLY'
-        },
-        {
-          label: 'Include',
-          value: 'INCLUDE'
-        }
-      ],
       tableBasicInfos: []
     }
   },
@@ -309,6 +274,7 @@ export default {
     },
     tableJsonSchema() {
       const obj = Utils.clone(this.tableSchema)
+      if (!obj || JSON.stringify(obj) === '{}') return
       delete obj.TableStatus
       delete obj.CreationDateTime
       delete obj.ProvisionedThroughput.LastIncreaseDateTime
@@ -318,7 +284,7 @@ export default {
       delete obj.ItemCount
       delete obj.TableArn
       if (obj.GlobalSecondaryIndexes) {
-        obj.GlobalSecondaryIndexes.forEach((gsi) => {
+        obj.GlobalSecondaryIndexes.forEach(gsi => {
           delete gsi.IndexStatus
           delete gsi.IndexSizeBytes
           delete gsi.ItemCount
@@ -326,7 +292,7 @@ export default {
         })
       }
       if (obj.LocalSecondaryIndexes) {
-        obj.LocalSecondaryIndexes.forEach((lsi) => {
+        obj.LocalSecondaryIndexes.forEach(lsi => {
           delete lsi.IndexStatus
           delete lsi.IndexSizeBytes
           delete lsi.ItemCount
@@ -356,7 +322,10 @@ export default {
     },
     deleteIndexDisabled() {
       return Utils.isEmpty(this.currentSelectIndex)
-    }
+    },
+    ...mapGetters({
+      updateIndexSuccess: 'updateIndexSuccess'
+    })
   },
   watch: {
     tableName(val) {
@@ -370,6 +339,12 @@ export default {
     },
     schemaIndex: function(newValue, oldValue) {
       this.updateItemSearch()
+    },
+    updateIndexSuccess(val) {
+      if (val) {
+        this.describeTable(this.tableName)
+        this.SET_UPDATEINDEXSUCCESS(false)
+      }
     }
   },
   methods: {
@@ -759,35 +734,11 @@ export default {
       this.currentSelectIndex = val
     },
     openAddIndexDialog(formName) {
-      this.table_add_index_dialogVisible = true
+      this.SET_INDEXATTRIBUTEDEFINITIONS(this.tableSchema.AttributeDefinitions)
+      this.SET_SHOWINDEXDIALOG(true)
       if (this.$refs[formName]) {
         this.$refs[formName].resetFields()
       }
-    },
-    validAndAddAttributeDefinitions(
-      attributeDefinitions,
-      attributeName,
-      attributeType
-    ) {
-      for (var attributeDefinition of attributeDefinitions) {
-        if (
-          attributeDefinition.AttributeName === attributeName &&
-          attributeDefinition.AttributeType !== attributeType
-        ) {
-          this.$message({
-            message:
-              ' Type of ' +
-              attributeName +
-              ' does not match existing data type',
-            type: 'warning'
-          })
-          return false
-        }
-      }
-      attributeDefinitions.push({
-        AttributeName: attributeName,
-        AttributeType: attributeType
-      })
     },
     deleteTableIndex(tableIndex) {
       this.$prompt(
@@ -824,7 +775,7 @@ export default {
               message: 'Delete index success!',
               type: 'success'
             })
-            this.table_add_index_dialogVisible = false
+            this.SET_SHOWINDEXDIALOG(false)
             this.describeTable(this.tableName)
           })
         })
@@ -835,79 +786,12 @@ export default {
           })
         })
     },
-    addTableIndex(tableIndex, formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          var attributeDefinitions = Utils.clone(
-            this.tableSchema.AttributeDefinitions
-          )
-          if (
-            this.validAndAddAttributeDefinitions(
-              attributeDefinitions,
-              tableIndex.partitionKey,
-              tableIndex.partitionKeyType
-            )
-          ) {
-            return
-          }
-          var keySchema = [
-            {
-              AttributeName: tableIndex.partitionKey,
-              KeyType: 'HASH'
-            }
-          ]
-          if (tableIndex.hasSortKey && Utils.isNotEmpty(tableIndex.sortKey)) {
-            if (
-              this.validAndAddAttributeDefinitions(
-                attributeDefinitions,
-                tableIndex.sortKey,
-                tableIndex.sortKeyType
-              )
-            ) {
-              return
-            }
-            keySchema.push({
-              AttributeName: tableIndex.sortKey,
-              KeyType: 'RANGE'
-            })
-          }
-          var params = {
-            TableName: this.tableName,
-            AttributeDefinitions: attributeDefinitions,
-            GlobalSecondaryIndexUpdates: [
-              {
-                Create: {
-                  IndexName: tableIndex.indexName,
-                  KeySchema: keySchema,
-                  Projection: {
-                    // NonKeyAttributes: [],
-                    ProjectionType: tableIndex.projectionType
-                  },
-                  ProvisionedThroughput: {
-                    ReadCapacityUnits: 5,
-                    WriteCapacityUnits: 5
-                  }
-                }
-              }
-            ]
-          }
-          console.log(params)
-          this.$dynamoDB.updateTable(params, res => {
-            this.$message({
-              message: 'Add index success!',
-              type: 'success'
-            })
-            this.table_add_index_dialogVisible = false
-            this.describeTable(this.tableName)
-          })
-        } else {
-          return false
-        }
-      })
-    },
     ...mapMutations({
       SET_SHOWEDITOR: 'SET_SHOWEDITOR',
-      SET_TEXT: 'SET_TEXT'
+      SET_TEXT: 'SET_TEXT',
+      SET_SHOWINDEXDIALOG: 'SET_SHOWINDEXDIALOG',
+      SET_INDEXATTRIBUTEDEFINITIONS: 'SET_INDEXATTRIBUTEDEFINITIONS',
+      SET_UPDATEINDEXSUCCESS: 'SET_UPDATEINDEXSUCCESS'
     })
   }
 }
