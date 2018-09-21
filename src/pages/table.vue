@@ -20,7 +20,7 @@
           @click="listTables"></el-button>
       </el-col>
     </el-row>
-    <el-row style="margin-top:10px;">
+    <el-row style="margin:10px 0;">
       <el-col :span="24">
         <el-table :data="tables"
           style="width: 100%"
@@ -59,6 +59,16 @@
         </el-table>
       </el-col>
     </el-row>
+    <div class="text-right">
+      <el-pagination @current-change="pageChange"
+        background
+        :current-page.sync="currentPage"
+        :page-size="pageSize"
+        layout="total, prev, pager, next"
+        :total="total">
+      </el-pagination>
+    </div>
+
     <transition name="slide-fade">
       <div class="table-details"
         :style="dragStyle"
@@ -84,6 +94,7 @@ import IndexDialog from '@/components/index-dialog'
 import Utils from '@/utils/utils'
 const AWS = require('aws-sdk')
 const dynamodb = new AWS.DynamoDB()
+const PAGE_SIZE = 2
 export default {
   components: { JsonEditor, IndexDialog },
   data() {
@@ -94,7 +105,11 @@ export default {
       controlTableDetails: false,
       startDrag: false,
       pageX: 300,
-      dynamoDB: null
+      dynamoDB: null,
+      currentPage: 1,
+      total: 0,
+      pageSize: PAGE_SIZE,
+      tableNames: []
     }
   },
   computed: {
@@ -130,6 +145,14 @@ export default {
         }
       },
       deep: true
+    },
+    search_table_input(val) {
+      this.tables = []
+      for (const tableName of this.tableNames) {
+        if (tableName.toLowerCase().indexOf(val.toLowerCase()) > -1) {
+          this.tables.push({ tableName })
+        }
+      }
     }
   },
   methods: {
@@ -152,11 +175,18 @@ export default {
       this.$dynamoDB.listTables(params, res => {
         if (res.data) {
           this.exclusiveStartTableName = res.LastEvaluatedTableName
-          let tableNames = res.data.TableNames
-          this.tables = []
-          tableNames.forEach((tableName, index) => {
-            this.describeTable(tableName)
-          })
+          this.tableNames = res.data.TableNames
+          this.total = this.tableNames.length
+          this.renderTables()
+        }
+      })
+    },
+    renderTables() {
+      const startIndex = (this.currentPage - 1) * PAGE_SIZE
+      this.tables = []
+      this.tableNames.forEach((tableName, index) => {
+        if (index >= startIndex && index < startIndex + PAGE_SIZE) {
+          this.describeTable(tableName)
         }
       })
     },
@@ -257,6 +287,10 @@ export default {
           this.startDrag = false
         }
       })
+    },
+    pageChange(val) {
+      this.currentPage = val
+      this.renderTables()
     }
   }
 }
@@ -271,6 +305,7 @@ export default {
     color: $primary;
   }
 }
+
 .table-details {
   position: absolute;
   right: 0;
@@ -313,5 +348,12 @@ export default {
 .slide-fade-enter,
 .slide-fade-leave-to {
   transform: translateX(100%);
+}
+</style>
+<style lang="scss">
+.el-pagination.is-background .el-pager li,
+.el-pagination.is-background .btn-prev,
+.el-pagination.is-background .btn-next {
+  background: #fff;
 }
 </style>
