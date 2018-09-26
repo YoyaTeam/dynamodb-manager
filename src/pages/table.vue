@@ -109,7 +109,8 @@ export default {
       currentPage: 1,
       total: 0,
       pageSize: PAGE_SIZE,
-      tableNames: []
+      tableNames: [],
+      searchTableNames: []
     }
   },
   computed: {
@@ -148,11 +149,15 @@ export default {
     },
     search_table_input(val) {
       this.tables = []
+      this.searchTableNames = []
       for (const tableName of this.tableNames) {
         if (tableName.toLowerCase().indexOf(val.toLowerCase()) > -1) {
-          this.tables.push({ tableName })
+          this.searchTableNames.push(tableName)
+          this.currentPage = 1
         }
       }
+      this.renderTables(this.searchTableNames)
+      this.total = this.searchTableNames.length
     }
   },
   methods: {
@@ -177,14 +182,14 @@ export default {
           this.exclusiveStartTableName = res.LastEvaluatedTableName
           this.tableNames = res.data.TableNames
           this.total = this.tableNames.length
-          this.renderTables()
+          this.renderTables(this.tableNames)
         }
       })
     },
-    renderTables() {
+    renderTables(data) {
       const startIndex = (this.currentPage - 1) * PAGE_SIZE
       this.tables = []
-      this.tableNames.forEach((tableName, index) => {
+      data.forEach((tableName, index) => {
         if (index >= startIndex && index < startIndex + PAGE_SIZE) {
           this.describeTable(tableName)
         }
@@ -290,7 +295,9 @@ export default {
     },
     pageChange(val) {
       this.currentPage = val
-      this.renderTables()
+      const data =
+        this.search_table_input === '' ? this.tableNames : this.searchTableNames
+      this.renderTables(data)
     }
   }
 }
