@@ -2,6 +2,7 @@
   <el-dialog id="add-index"
     title="Add Index"
     :visible.sync="showIndexDialog"
+    @close="closeIndex"
     width="40%">
     <el-form :model="newTableIndex"
       :rules="addTableIndexRules"
@@ -150,6 +151,9 @@ export default {
     })
   },
   methods: {
+    closeIndex() {
+      this.SET_SHOWINDEXDIALOG(false)
+    },
     validAndAddAttributeDefinitions(
       attributeDefinitions,
       attributeName,

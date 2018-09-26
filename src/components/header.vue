@@ -1,31 +1,34 @@
 <template>
-  <div class="header">
-    <el-menu class="el-menu-demo"
-      mode="horizontal"
-      @select="handleSelect"
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-      <h1>Dynamodb Manager</h1>
-      <el-submenu index="setting">
-        <template slot="title">Setting</template>
-        <el-menu-item index="add_database">Add Database</el-menu-item>
-        <el-menu-item index="create_table">Create Table</el-menu-item>
-        <el-menu-item index="open_config">Open Config</el-menu-item>
-      </el-submenu>
-      <el-submenu index="region">
-        <template slot="title">{{ this.$store.state.aws.config.region || 'Region' }}</template>
-        <el-menu-item v-for="(item, index) in regions"
-          :index="item"
-          :key="index">{{ item }}</el-menu-item>
-      </el-submenu>
-      <el-submenu index="endpoint">
-        <template slot="title">{{ this.$store.state.aws.config.endpoint || 'Endpoint' }}</template>
-        <el-menu-item v-for="(item, index) in endpoints"
-          :index="item"
-          :key="index">{{ item }}</el-menu-item>
-      </el-submenu>
-    </el-menu>
+  <div>
+    <div class="header">
+      <el-menu class="el-menu-demo"
+        mode="horizontal"
+        @select="handleSelect"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b">
+        <h1>Dynamodb Manager</h1>
+        <el-submenu index="setting">
+          <template slot="title">Setting</template>
+          <el-menu-item index="add_database">Add Database</el-menu-item>
+          <el-menu-item index="create_table">Create Table</el-menu-item>
+          <el-menu-item index="open_config">Open Config</el-menu-item>
+        </el-submenu>
+        <el-submenu index="region">
+          <template slot="title">{{ this.$store.state.aws.config.region || 'Region' }}</template>
+          <el-menu-item v-for="(item, index) in regions"
+            :index="item"
+            :key="index">{{ item }}</el-menu-item>
+        </el-submenu>
+        <el-submenu index="endpoint">
+          <template slot="title">{{ this.$store.state.aws.config.endpoint || 'Endpoint' }}</template>
+          <el-menu-item v-for="(item, index) in endpoints"
+            :index="item"
+            :key="index">{{ item }}</el-menu-item>
+        </el-submenu>
+      </el-menu>
+
+    </div>
     <el-dialog id="add-database"
       title="Add Database"
       :visible.sync="dialogVisible"
@@ -288,6 +291,7 @@
       </span>
     </el-dialog>
   </div>
+
 </template>
 
 <script>
