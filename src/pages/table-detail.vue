@@ -439,11 +439,15 @@ export default {
           },
           {
             key: 'Last decrease time',
-            value: data.ProvisionedThroughput.LastDecreaseDateTime.toString()
+            value: data.ProvisionedThroughput.LastDecreaseDateTime
+              ? data.ProvisionedThroughput.LastDecreaseDateTime.toString()
+              : ''
           },
           {
             key: 'Last increase time',
-            value: data.ProvisionedThroughput.LastIncreaseDateTime.toString()
+            value: data.ProvisionedThroughput.LastIncreaseDateTime
+              ? data.ProvisionedThroughput.LastIncreaseDateTime.toString()
+              : ''
           },
           {
             key: 'Table Arm',
