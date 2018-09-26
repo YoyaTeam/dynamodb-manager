@@ -1,293 +1,293 @@
 <template>
-    <div class="header">
-        <el-menu class="el-menu-demo"
-            mode="horizontal"
-            @select="handleSelect"
-            background-color="#545c64"
-            text-color="#fff"
-            active-text-color="#ffd04b">
-            <h1>Dynamodb Manager</h1>
-            <el-submenu index="setting">
-                <template slot="title">Setting</template>
-                <el-menu-item index="add_database">Add Database</el-menu-item>
-                <el-menu-item index="create_table">Create Table</el-menu-item>
-                <el-menu-item index="open_config">Open Config</el-menu-item>
-            </el-submenu>
-            <el-submenu index="region">
-                <template slot="title">{{ this.$store.state.aws.config.region || 'Region' }}</template>
-                <el-menu-item v-for="(item, index) in regions"
-                    :index="item"
-                    :key="index">{{ item }}</el-menu-item>
-            </el-submenu>
-            <el-submenu index="endpoint">
-                <template slot="title">{{ this.$store.state.aws.config.endpoint || 'Endpoint' }}</template>
-                <el-menu-item v-for="(item, index) in endpoints"
-                    :index="item"
-                    :key="index">{{ item }}</el-menu-item>
-            </el-submenu>
-        </el-menu>
-        <el-dialog id="add-database"
-            title="Add Database"
-            :visible.sync="dialogVisible"
-            width="35%">
-            <el-form :model="newConfig"
-                :rules="rules"
-                ref="ruleForm"
-                label-position="left"
-                label-width="120px">
-                <el-form-item label="Endpoint"
-                    prop="endpoint">
-                    <el-input v-model="newConfig.endpoint"
-                        placeholder="http://127.0.0.1:80"></el-input>
-                </el-form-item>
-                <el-form-item label="Region"
-                    prop="region">
-                    <el-select v-model="newConfig.region"
-                        placeholder="us-east-1">
-                        <el-option v-for="(item, index) in regions"
-                            :key="index"
-                            :value="item"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="Access Key"
-                    prop="accessKeyId">
-                    <el-input v-model="newConfig.accessKeyId"
-                        placeholder="patsnap"></el-input>
-                </el-form-item>
-                <el-form-item label="Secret Key"
-                    prop="secretAccessKey">
-                    <el-input v-model="newConfig.secretAccessKey"
-                        placeholder="patsnap"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer"
-                class="dialog-footer">
-                <el-button @click="testConnection(newConfig, 'ruleForm')">Test Connection</el-button>
-                <el-button type="primary"
-                    @click="addDatabase(newConfig, 'ruleForm')"
-                    :disabled="add_disabled">Add</el-button>
-            </span>
-        </el-dialog>
-        <el-dialog id="create-table"
-            title="Create DynamoDB Table"
-            :visible.sync="add_table_dialogVisible"
-            width="55%">
-            <el-form :model="tableSchema"
-                :rules="tableSchemaRules"
-                ref="tableSchemaRuleForm"
-                size="mini"
-                label-position="right"
-                label-width="120px">
-                <el-form-item label="Table Name"
-                    prop="tableName">
-                    <el-col :span="10">
-                        <el-input v-model="tableSchema.tableName"></el-input>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="Partition Key"
-                    prop="partitionKey">
-                    <el-row>
-                        <el-col :span="10">
-                            <el-input v-model="tableSchema.partitionKey"></el-input>
-                        </el-col>
-                        <el-col :span="6"
-                            :offset="1">
-                            <el-select v-model="tableSchema.partitionKeyType"
-                                placeholder="type">
-                                <el-option v-for="item in dataTypes"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
-                    <el-checkbox v-model="tableSchema.hasSortKey">Add sort key</el-checkbox>
-                </el-form-item>
-                <el-form-item label="Sort Key"
-                    prop="sortKey"
-                    v-show="tableSchema.hasSortKey">
-                    <el-row>
-                        <el-col :span="10">
-                            <el-input v-model="tableSchema.sortKey"></el-input>
-                        </el-col>
-                        <el-col :span="6"
-                            :offset="1">
-                            <el-select v-model="tableSchema.sortKeyType"
-                                placeholder="type">
-                                <el-option v-for="item in dataTypes"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="Second Index">
-                    <el-button type="primary"
-                        @click="openAddIndexDialog('addIndexRuleForm')">Add Index</el-button>
-                    <el-table :data="secondIndex"
-                        style="width: 100%"
-                        size="mini">
-                        <el-table-column prop="indexName"
-                            label="Name">
-                        </el-table-column>
-                        <el-table-column prop="indexType"
-                            label="Type">
-                        </el-table-column>
-                        <el-table-column prop="partitionKey"
-                            label="Partition Key">
-                            <template slot-scope="scope">
-                                {{ scope.row.partitionKey + ' (' + scope.row.partitionKeyType + ')' }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="sortKey"
-                            label="Sort Key">
-                            <template slot-scope="scope">
-                                {{ scope.row.sortKey }}
-                                <span v-show="scope.row.sortKey">({{ scope.row.sortKeyType }})</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="projectionType"
-                            label="Projection Type">
-                        </el-table-column>
-                        <el-table-column>
-                            <template slot-scope="scope">
-                                <el-button size="mini"
-                                    type="danger"
-                                    @click="indexHandleDelete(scope.$index, scope.row)">delete</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                </el-form-item>
-            </el-form>
-            <span slot="footer"
-                class="dialog-footer">
+  <div class="header">
+    <el-menu class="el-menu-demo"
+      mode="horizontal"
+      @select="handleSelect"
+      background-color="#545c64"
+      text-color="#fff"
+      active-text-color="#ffd04b">
+      <h1>Dynamodb Manager</h1>
+      <el-submenu index="setting">
+        <template slot="title">Setting</template>
+        <el-menu-item index="add_database">Add Database</el-menu-item>
+        <el-menu-item index="create_table">Create Table</el-menu-item>
+        <el-menu-item index="open_config">Open Config</el-menu-item>
+      </el-submenu>
+      <el-submenu index="region">
+        <template slot="title">{{ this.$store.state.aws.config.region || 'Region' }}</template>
+        <el-menu-item v-for="(item, index) in regions"
+          :index="item"
+          :key="index">{{ item }}</el-menu-item>
+      </el-submenu>
+      <el-submenu index="endpoint">
+        <template slot="title">{{ this.$store.state.aws.config.endpoint || 'Endpoint' }}</template>
+        <el-menu-item v-for="(item, index) in endpoints"
+          :index="item"
+          :key="index">{{ item }}</el-menu-item>
+      </el-submenu>
+    </el-menu>
+    <el-dialog id="add-database"
+      title="Add Database"
+      :visible.sync="dialogVisible"
+      width="35%">
+      <el-form :model="newConfig"
+        :rules="rules"
+        ref="ruleForm"
+        label-position="left"
+        label-width="120px">
+        <el-form-item label="Endpoint"
+          prop="endpoint">
+          <el-input v-model="newConfig.endpoint"
+            placeholder="http://127.0.0.1:80"></el-input>
+        </el-form-item>
+        <el-form-item label="Region"
+          prop="region">
+          <el-select v-model="newConfig.region"
+            placeholder="us-east-1">
+            <el-option v-for="(item, index) in regions"
+              :key="index"
+              :value="item"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Access Key"
+          prop="accessKeyId">
+          <el-input v-model="newConfig.accessKeyId"
+            placeholder="patsnap"></el-input>
+        </el-form-item>
+        <el-form-item label="Secret Key"
+          prop="secretAccessKey">
+          <el-input v-model="newConfig.secretAccessKey"
+            placeholder="patsnap"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button @click="testConnection(newConfig, 'ruleForm')">Test Connection</el-button>
+        <el-button type="primary"
+          @click="addDatabase(newConfig, 'ruleForm')"
+          :disabled="add_disabled">Add</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog id="create-table"
+      title="Create DynamoDB Table"
+      :visible.sync="add_table_dialogVisible"
+      width="55%">
+      <el-form :model="tableSchema"
+        :rules="tableSchemaRules"
+        ref="tableSchemaRuleForm"
+        size="mini"
+        label-position="right"
+        label-width="120px">
+        <el-form-item label="Table Name"
+          prop="tableName">
+          <el-col :span="10">
+            <el-input v-model="tableSchema.tableName"></el-input>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="Partition Key"
+          prop="partitionKey">
+          <el-row>
+            <el-col :span="10">
+              <el-input v-model="tableSchema.partitionKey"></el-input>
+            </el-col>
+            <el-col :span="6"
+              :offset="1">
+              <el-select v-model="tableSchema.partitionKeyType"
+                placeholder="type">
+                <el-option v-for="item in dataTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
+          <el-checkbox v-model="tableSchema.hasSortKey">Add sort key</el-checkbox>
+        </el-form-item>
+        <el-form-item label="Sort Key"
+          prop="sortKey"
+          v-show="tableSchema.hasSortKey">
+          <el-row>
+            <el-col :span="10">
+              <el-input v-model="tableSchema.sortKey"></el-input>
+            </el-col>
+            <el-col :span="6"
+              :offset="1">
+              <el-select v-model="tableSchema.sortKeyType"
+                placeholder="type">
+                <el-option v-for="item in dataTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="Second Index">
+          <el-button type="primary"
+            @click="openAddIndexDialog('addIndexRuleForm')">Add Index</el-button>
+          <el-table :data="secondIndex"
+            style="width: 100%"
+            size="mini">
+            <el-table-column prop="indexName"
+              label="Name">
+            </el-table-column>
+            <el-table-column prop="indexType"
+              label="Type">
+            </el-table-column>
+            <el-table-column prop="partitionKey"
+              label="Partition Key">
+              <template slot-scope="scope">
+                {{ scope.row.partitionKey + ' (' + scope.row.partitionKeyType + ')' }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="sortKey"
+              label="Sort Key">
+              <template slot-scope="scope">
+                {{ scope.row.sortKey }}
+                <span v-show="scope.row.sortKey">({{ scope.row.sortKeyType }})</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="projectionType"
+              label="Projection Type">
+            </el-table-column>
+            <el-table-column>
+              <template slot-scope="scope">
                 <el-button size="mini"
-                    type="primary"
-                    @click="createTable(tableSchema, secondIndex, 'tableSchemaRuleForm')">Create Table</el-button>
-            </span>
-        </el-dialog>
-        <el-dialog id="add-index"
-            title="Add Index"
-            :visible.sync="add_index_dialogVisible"
-            width="40%">
-            <el-form :model="tableIndex"
-                :rules="addIndexRules"
-                ref="addIndexRuleForm"
-                label-position="right"
-                label-width="150px"
-                size="mini">
-                <el-form-item label="Partition Key"
-                    prop="partitionKey">
-                    <el-row>
-                        <el-col :span="17">
-                            <el-input v-model="tableIndex.partitionKey"></el-input>
-                        </el-col>
-                        <el-col :span="6"
-                            :offset="1">
-                            <el-select v-model="tableIndex.partitionKeyType"
-                                placeholder="type">
-                                <el-option v-for="item in dataTypes"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
-                    <el-checkbox v-model="tableIndex.hasSortKey">Add sort key</el-checkbox>
-                </el-form-item>
-                <el-form-item label="Sort Key"
-                    prop="sortKey"
-                    v-show="tableIndex.hasSortKey">
-                    <el-row>
-                        <el-col :span="17">
-                            <el-input v-model="tableIndex.sortKey"></el-input>
-                        </el-col>
-                        <el-col :span="6"
-                            :offset="1">
-                            <el-select v-model="tableIndex.sortKeyType"
-                                placeholder="type">
-                                <el-option v-for="item in dataTypes"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="Index Name"
-                    prop="indexName">
-                    <el-row>
-                        <el-col :span="17">
-                            <el-input v-model="tableIndex.indexName"></el-input>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item label="Projected Attributes"
-                    prop="projectionType">
-                    <el-row>
-                        <el-col :span="17">
-                            <el-select v-model="tableIndex.projectionType"
-                                placeholder="type">
-                                <el-option v-for="item in projectionTypes"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-col>
-                    </el-row>
-                </el-form-item>
-                <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
-                    <el-checkbox v-model="tableIndex.indexType"
-                        true-label="LSI"
-                        false-label="GSI"
-                        disabled>Create as Local Secondary Index</el-checkbox>
-                </el-form-item>
-            </el-form>
-            <span slot="footer"
-                class="dialog-footer">
-                <el-button type="primary"
-                    @click="addIndex(tableIndex, 'addIndexRuleForm')">Add</el-button>
-            </span>
-        </el-dialog>
-        <el-dialog id="config"
-            title="AWS Config"
-            :visible.sync="config_dialogVisible"
-            width="30%">
-            <el-form label-position="left"
-                label-width="120px">
-                <el-form-item label="Region">
-                    {{ this.$store.state.aws.config.region }}
-                </el-form-item>
-                <el-form-item label="Endpoint"
-                    prop="endpoint">
-                    {{ this.$store.state.aws.config.endpoint }}
-                </el-form-item>
-                <el-form-item label="Access Key"
-                    prop="accessKeyId">
-                    {{ this.$store.state.aws.config.accessKeyId }}
-                </el-form-item>
-                <el-form-item label="Secret Key"
-                    prop="secretAccessKey">
-                    {{ this.$store.state.aws.config.secretAccessKey }}
-                </el-form-item>
-            </el-form>
-            <span slot="footer"
-                class="dialog-footer">
-                <el-button type="primary"
-                    @click="config_dialogVisible = false">Close</el-button>
-            </span>
-        </el-dialog>
-    </div>
+                  type="danger"
+                  @click="indexHandleDelete(scope.$index, scope.row)">delete</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button size="mini"
+          type="primary"
+          @click="createTable(tableSchema, secondIndex, 'tableSchemaRuleForm')">Create Table</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog id="add-index"
+      title="Add Index"
+      :visible.sync="add_index_dialogVisible"
+      width="40%">
+      <el-form :model="tableIndex"
+        :rules="addIndexRules"
+        ref="addIndexRuleForm"
+        label-position="right"
+        label-width="150px"
+        size="mini">
+        <el-form-item label="Partition Key"
+          prop="partitionKey">
+          <el-row>
+            <el-col :span="17">
+              <el-input v-model="tableIndex.partitionKey"></el-input>
+            </el-col>
+            <el-col :span="6"
+              :offset="1">
+              <el-select v-model="tableIndex.partitionKeyType"
+                placeholder="type">
+                <el-option v-for="item in dataTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
+          <el-checkbox v-model="tableIndex.hasSortKey">Add sort key</el-checkbox>
+        </el-form-item>
+        <el-form-item label="Sort Key"
+          prop="sortKey"
+          v-show="tableIndex.hasSortKey">
+          <el-row>
+            <el-col :span="17">
+              <el-input v-model="tableIndex.sortKey"></el-input>
+            </el-col>
+            <el-col :span="6"
+              :offset="1">
+              <el-select v-model="tableIndex.sortKeyType"
+                placeholder="type">
+                <el-option v-for="item in dataTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="Index Name"
+          prop="indexName">
+          <el-row>
+            <el-col :span="17">
+              <el-input v-model="tableIndex.indexName"></el-input>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item label="Projected Attributes"
+          prop="projectionType">
+          <el-row>
+            <el-col :span="17">
+              <el-select v-model="tableIndex.projectionType"
+                placeholder="type">
+                <el-option v-for="item in projectionTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0px;margin-top: -10px;">
+          <el-checkbox v-model="tableIndex.indexType"
+            true-label="LSI"
+            false-label="GSI"
+            disabled>Create as Local Secondary Index</el-checkbox>
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button type="primary"
+          @click="addIndex(tableIndex, 'addIndexRuleForm')">Add</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog id="config"
+      title="AWS Config"
+      :visible.sync="config_dialogVisible"
+      width="30%">
+      <el-form label-position="left"
+        label-width="120px">
+        <el-form-item label="Region">
+          {{ this.$store.state.aws.config.region }}
+        </el-form-item>
+        <el-form-item label="Endpoint"
+          prop="endpoint">
+          {{ this.$store.state.aws.config.endpoint }}
+        </el-form-item>
+        <el-form-item label="Access Key"
+          prop="accessKeyId">
+          {{ this.$store.state.aws.config.accessKeyId }}
+        </el-form-item>
+        <el-form-item label="Secret Key"
+          prop="secretAccessKey">
+          {{ this.$store.state.aws.config.secretAccessKey }}
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+        class="dialog-footer">
+        <el-button type="primary"
+          @click="config_dialogVisible = false">Close</el-button>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
@@ -666,6 +666,12 @@ export default {
 </script>
 
 <style scoped>
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 101;
+}
 .header h1 {
   margin: 15px;
   float: left;

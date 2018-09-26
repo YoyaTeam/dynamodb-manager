@@ -110,7 +110,8 @@ export default {
       total: 0,
       pageSize: PAGE_SIZE,
       tableNames: [],
-      searchTableNames: []
+      searchTableNames: [],
+      last: null
     }
   },
   computed: {
@@ -148,16 +149,25 @@ export default {
       deep: true
     },
     search_table_input(val) {
-      this.tables = []
-      this.searchTableNames = []
-      for (const tableName of this.tableNames) {
-        if (tableName.toLowerCase().indexOf(val.toLowerCase()) > -1) {
-          this.searchTableNames.push(tableName)
-          this.currentPage = 1
-        }
+      if (this.last) {
+        clearTimeout(this.last)
       }
-      this.renderTables(this.searchTableNames)
-      this.total = this.searchTableNames.length
+      this.last = setTimeout(() => {
+        this.tables = []
+        this.searchTableNames = []
+        this.currentPage = 1
+        for (const tableName of this.tableNames) {
+          if (
+            tableName.toLowerCase().indexOf(val.toLowerCase()) > -1 &&
+            this.searchTableNames.indexOf(tableName) === -1
+          ) {
+            this.searchTableNames.push(tableName)
+          }
+        }
+        this.renderTables(this.searchTableNames)
+        this.total = this.searchTableNames.length
+        this.last = null
+      }, 300)
     }
   },
   methods: {
@@ -306,8 +316,7 @@ export default {
 <style lang="scss" scoped>
 @import '~styles/variable';
 .main {
-  margin-top: 60px;
-  padding: 20px 30px;
+  padding: 82px 30px 20px 30px;
   .table-name {
     cursor: pointer;
     color: $primary;
@@ -324,7 +333,7 @@ export default {
   .drag-part {
     position: absolute;
     top: 0;
-    left: 0px;
+    left: 0;
     bottom: 0;
     width: 3px;
     background: black;
