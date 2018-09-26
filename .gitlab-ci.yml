@@ -1,0 +1,26 @@
+---
+image: local-dtr.zhihuiya.com/buildenv/node:9-Rel.1.0.2
+
+variables:
+
+
+stages:
+  - build
+  - deploy
+
+build_qa:
+  tags:
+    - build
+    - docker
+  stage: build
+  when: manual
+  variables:
+    ENDPOINT: http://fake-s3-qa.patsnap.local 
+    WEBPATH: dynamodb-manager.zhihuiya.com/
+
+  only:
+    - /^master$/
+  script:
+    - npm --registry https://registry.npm.taobao.org install
+    - npm run build
+    - npm run upload -- --uri s3://"$WEBPATH" --plus " --endpoint-url $ENDPOINT"
