@@ -591,8 +591,7 @@ export default {
               AttributeType: tableSchema.sortKeyType
             })
           }
-          console.log(secondIndex)
-          console.log(params.GlobalSecondaryIndexes)
+
           if (Utils.isNotEmpty(secondIndex)) {
             secondIndex.forEach((value, index) => {
               var si = {
@@ -654,6 +653,7 @@ export default {
                 title: 'create table  success!'
               })
               this.add_table_dialogVisible = false
+              this.SET_REFRESH(true)
             }
           })
         } else {
@@ -663,7 +663,8 @@ export default {
     },
     ...mapMutations({
       UPDATE_ENDPOINT: 'UPDATE_ENDPOINT',
-      UPDATE_REGION: 'UPDATE_REGION'
+      UPDATE_REGION: 'UPDATE_REGION',
+      SET_REFRESH: 'SET_REFRESH'
     })
   }
 }

@@ -92,6 +92,7 @@
 import JsonEditor from '@/components/json-editor'
 import IndexDialog from '@/components/index-dialog'
 import Utils from '@/utils/utils'
+import { mapGetters, mapMutations } from 'vuex'
 const AWS = require('aws-sdk')
 const dynamodb = new AWS.DynamoDB()
 const PAGE_SIZE = 10
@@ -125,7 +126,10 @@ export default {
       let width = document.body.clientWidth - this.pageX
       width = width > 200 ? width : 200
       return { width: `${width}px` }
-    }
+    },
+    ...mapGetters({
+      refresh: 'refresh'
+    })
   },
   mounted() {
     this.listenBodyMouse()
@@ -168,6 +172,12 @@ export default {
         this.total = this.searchTableNames.length
         this.last = null
       }, 300)
+    },
+    refresh(val) {
+      if (val) {
+        this.listTables()
+        this.SET_REFRESH(false)
+      }
     }
   },
   methods: {
@@ -196,16 +206,19 @@ export default {
         }
       })
     },
-    renderTables(data) {
+    async renderTables(data) {
       const startIndex = (this.currentPage - 1) * PAGE_SIZE
       this.tables = []
-      data.forEach((tableName, index) => {
-        if (index >= startIndex && index < startIndex + PAGE_SIZE) {
-          this.describeTable(tableName)
+      for (let i = 0; i < data.length; i++) {
+        if (i >= startIndex && i < startIndex + PAGE_SIZE) {
+          await this.describeTable(data[i])
+          console.log('1')
         }
-      })
+      }
+      console.log('done')
     },
     describeTable(tableName) {
+      console.log(tableName)
       const table = { tableName }
       this.$dynamoDB.describeTable(tableName, res => {
         const data = res.data
@@ -308,7 +321,10 @@ export default {
       const data =
         this.search_table_input === '' ? this.tableNames : this.searchTableNames
       this.renderTables(data)
-    }
+    },
+    ...mapMutations({
+      SET_REFRESH: 'SET_REFRESH'
+    })
   }
 }
 </script>
