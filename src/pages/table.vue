@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <el-row>
-      <el-col :span="5">
+      <el-col :span="4">
         <el-input v-model="search_table_input"
           prefix-icon="el-icon-search"
           placeholder="search table"></el-input>
@@ -94,7 +94,7 @@ import IndexDialog from '@/components/index-dialog'
 import Utils from '@/utils/utils'
 const AWS = require('aws-sdk')
 const dynamodb = new AWS.DynamoDB()
-const PAGE_SIZE = 2
+const PAGE_SIZE = 10
 export default {
   components: { JsonEditor, IndexDialog },
   data() {
@@ -174,7 +174,7 @@ export default {
     listTables() {
       this.$dynamoDB.config = this.config
       var params = {
-        Limit: 10,
+        // Limit: 10,
         ExclusiveStartTableName: this.exclusiveStartTableName
       }
       this.$dynamoDB.listTables(params, res => {
@@ -306,6 +306,7 @@ export default {
 <style lang="scss" scoped>
 @import '~styles/variable';
 .main {
+  margin-top: 60px;
   padding: 20px 30px;
   .table-name {
     cursor: pointer;

@@ -10,7 +10,7 @@
             style="width: 100%;margin:20px 0 30px;">
             <el-table-column prop="key"
               label="Configuration Item"
-              width="200">
+              width="300">
             </el-table-column>
             <el-table-column prop="value"
               label="Value">
@@ -20,6 +20,7 @@
           <el-input style="margin-top:20px;"
             type="textarea"
             :rows="20"
+            autosize
             :disabled="true"
             v-model="tableJsonSchema">
           </el-input>
