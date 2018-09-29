@@ -22,8 +22,11 @@
     </el-row>
     <el-row style="margin:10px 0;">
       <el-col :span="24">
+        <div class="loading-mask" id="loading_mask"></div>
+
         <el-table :data="tables"
           style="width: 100%"
+          id="dynamodb_table"
           highlight-current-row
           @current-change="handleCurrentChange">
           <el-table-column type="index"
@@ -209,30 +212,38 @@ export default {
     async renderTables(data) {
       const startIndex = (this.currentPage - 1) * PAGE_SIZE
       this.tables = []
+      const loadingInstance = this.$loading({
+        target: document.getElementById('loading_mask')
+      })
       for (let i = 0; i < data.length; i++) {
         if (i >= startIndex && i < startIndex + PAGE_SIZE) {
           await this.describeTable(data[i])
-          console.log('1')
         }
       }
-      console.log('done')
+      this.$nextTick(() => {
+        // 以服务的方式调用的 Loading 需要异步关闭
+        loadingInstance.close()
+      })
     },
-    describeTable(tableName) {
-      console.log(tableName)
+    async describeTable(tableName) {
       const table = { tableName }
-      this.$dynamoDB.describeTable(tableName, res => {
-        const data = res.data
-        if (!data) {
-          return
-        }
-        table.status = data.Table.TableStatus
-        table.itemCount = data.Table.ItemCount
-        table.ReadCapacity = data.Table.ProvisionedThroughput.ReadCapacityUnits
-        table.WriteCapacity =
-          data.Table.ProvisionedThroughput.WriteCapacityUnits
-        table.hashKey = this.getSchemaKey(data.Table.KeySchema, 'HASH')
-        table.rangekey = this.getSchemaKey(data.Table.KeySchema, 'RANGE')
-        this.tables.push(table)
+      return new Promise(resolve => {
+        this.$dynamoDB.describeTable(tableName, res => {
+          const data = res.data
+          if (!data) {
+            return
+          }
+          table.status = data.Table.TableStatus
+          table.itemCount = data.Table.ItemCount
+          table.ReadCapacity =
+            data.Table.ProvisionedThroughput.ReadCapacityUnits
+          table.WriteCapacity =
+            data.Table.ProvisionedThroughput.WriteCapacityUnits
+          table.hashKey = this.getSchemaKey(data.Table.KeySchema, 'HASH')
+          table.rangekey = this.getSchemaKey(data.Table.KeySchema, 'RANGE')
+          this.tables.push(table)
+          resolve()
+        })
       })
     },
     getSchemaKey(keySchema, keyType) {
@@ -244,7 +255,6 @@ export default {
       return ''
     },
     deleteTable(table) {
-      console.log(table)
       let tableName = table.tableName
       if (!tableName) {
         this.$message({
@@ -370,6 +380,11 @@ export default {
       margin-right: 10px;
     }
   }
+}
+.loading-mask {
+  position: absolute;
+  width: 100%;
+  height: 500px;
 }
 .slide-fade-enter-active {
   transition: all 0.3s ease;
