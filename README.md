@@ -21,7 +21,7 @@ If you have a better idea or function, welcome to issue.
   * [x] Query Table 
   * [x] Search with Filter Condition 
 
-![image](https://github.com/YoyaTeam/dynamodb-manager/master/screenshots/screenshots.gif)
+![image](https://github.com/YoyaTeam/dynamodb-manager/blob/master/screenshots/screenshots.gif)
 
 ## how to use
 
