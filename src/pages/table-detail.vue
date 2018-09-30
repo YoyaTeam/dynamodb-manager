@@ -3,41 +3,31 @@
     <el-tabs>
       <el-tab-pane>
         <span slot="label">
-          <i class="el-icon-view"></i> Overview</span>
+          <i class="el-icon-document"></i> Basic Info</span>
         <div class="basic-info">
-          <h2>Basic Info</h2>
-          <el-table :data="tableBasicInfos"
-            style="width: 100%;margin:20px 0 30px;">
-            <el-table-column prop="key"
-              label="Configuration Item"
-              width="300">
+          <el-table :data="tableBasicInfos" style="width: 100%;margin:20px 0 30px;">
+            <el-table-column prop="key" label="Configuration Item" width="300">
             </el-table-column>
-            <el-table-column prop="value"
-              label="Value">
+            <el-table-column prop="value" label="Value">
             </el-table-column>
           </el-table>
-          <h2>Table Schema</h2>
-          <el-input style="margin-top:20px;"
-            type="textarea"
-            :rows="20"
-            autosize
-            :disabled="true"
-            v-model="tableJsonSchema">
+        </div>
+      </el-tab-pane>
+      <el-tab-pane>
+        <span slot="label">
+          <i class="el-icon-edit-outline"></i> Table Schema</span>
+        <div class="basic-info">
+          <el-input style="margin-top:20px;" type="textarea" autosize :disabled="true" v-model="tableJsonSchema">
           </el-input>
         </div>
       </el-tab-pane>
       <el-tab-pane>
         <span slot="label">
-          <i class="el-icon-document"></i> Item</span>
+          <i class="el-icon-search"></i> Item</span>
         <div>
           <el-row style="margin:10px 0">
-            <el-button type="success"
-              plain
-              @click="createItem">Create item</el-button>
-            <el-button type="warning"
-              plain
-              @click="deleteItems(multipleSelection)"
-              :disabled="multipleSelection.length === 0">Delete items</el-button>
+            <el-button type="success" @click="createItem">Create item</el-button>
+            <el-button type="warning" @click="deleteItems(multipleSelection)" :disabled="multipleSelection.length === 0">Delete items</el-button>
           </el-row>
           <el-collapse v-model="activeNames">
             <el-collapse-item name="tableSearch">
@@ -45,47 +35,30 @@
                 {{ tableSearchTitle || 'Click search to scan table' }}
                 <i class="header-icon el-icon-info"></i>
                 <div class="detail-pagination">
-                  <i class="el-icon-arrow-left"
-                    v-show="startIndex > 1"
-                    @click.stop="search(false, 'prev')"></i>
+                  <i class="el-icon-arrow-left" v-show="startIndex > 1" @click.stop="search(false, 'prev')"></i>
                   <span v-show="startIndex>0">Viewing {{(startIndex -1) * limit}} to {{(startIndex-1) * limit + total}} Items</span>
-                  <i class="el-icon-arrow-right"
-                    v-show="exclusiveStartKeys.length > 0"
-                    @click.stop="search(false, 'next')"></i>
+                  <i class="el-icon-arrow-right" v-show="exclusiveStartKeys.length > 0" @click.stop="search(false, 'next')"></i>
                 </div>
               </template>
-              <el-row>
-                <el-col :span="4">
+              <el-row :gutter="10">
+                <el-col :span="2">
                   <el-select v-model="method">
-                    <el-option label="Scan"
-                      value="scan">
+                    <el-option label="Scan" value="scan">
                     </el-option>
-                    <el-option label="Query"
-                      value="query">
+                    <el-option label="Query" value="query">
                     </el-option>
                   </el-select>
                 </el-col>
-                <el-col :span="15">
-                  <el-select v-model="schemaIndex"
-                    class="schema-select">
-                    <el-option v-for="(item,index) in schemaOptions"
-                      :key="`schema${index}`"
-                      :label="item.label"
-                      :value="item.value">
+                <el-col :span="16">
+                  <el-select v-model="schemaIndex" class="schema-select">
+                    <el-option v-for="(item,index) in schemaOptions" :key="`schema${index}`" :label="item.label" :value="item.value">
                     </el-option>
                   </el-select>
                 </el-col>
               </el-row>
               <el-row style="margin-top:10px;">
-                <el-form :model="itemSearch"
-                  :rules="itemSearchRules"
-                  ref="itemSearch"
-                  label-position="left"
-                  label-width="200px"
-                  size="mini"
-                  v-show="method === 'query' && tableIndex[parseInt(schemaIndex)]">
-                  <el-form-item label="Partition Key"
-                    prop="hk.value">
+                <el-form :model="itemSearch" :rules="itemSearchRules" ref="itemSearch" label-position="right" label-width="9%" size="mini" v-show="method === 'query' && tableIndex[parseInt(schemaIndex)]">
+                  <el-form-item label="Partition Key" prop="hk.value">
                     <el-row :gutter="10">
                       <el-col :span="4">
                         <span class="field_value">{{ itemSearch.hk.name }}</span>
@@ -96,14 +69,12 @@
                       <el-col :span="3">
                         <span class="field_value text-center">{{ itemSearch.hk.calculate }}</span>
                       </el-col>
-                      <el-col :span="9">
+                      <el-col :span="8">
                         <el-input v-model="itemSearch.hk.value"></el-input>
                       </el-col>
                     </el-row>
                   </el-form-item>
-                  <el-form-item label="Sort Key"
-                    prop="sortKeyValue"
-                    v-show="method === 'query' && tableIndex[parseInt(schemaIndex)] && tableIndex[parseInt(schemaIndex)].keySchema[1]">
+                  <el-form-item label="Sort Key" prop="sortKeyValue" v-show="method === 'query' && tableIndex[parseInt(schemaIndex)] && tableIndex[parseInt(schemaIndex)].keySchema[1]">
                     <el-row :gutter="10">
                       <el-col :span="4">
                         <span class="field_value">{{ itemSearch.rk.name }}</span>
@@ -113,19 +84,13 @@
                       </el-col>
                       <el-col :span="3">
                         <el-select v-model="itemSearch.rk.calculate">
-                          <el-option v-for="(type,index) in queryTypes"
-                            class="field_value"
-                            :key="`query${index}`"
-                            :label="type"
-                            :value="type"></el-option>
+                          <el-option v-for="(type,index) in queryTypes" class="field_value" :key="`query${index}`" :label="type" :value="type"></el-option>
                         </el-select>
                       </el-col>
-                      <el-col :span="9"
-                        v-if="itemSearch.rk.calculate !== 'BETWEEN'">
+                      <el-col :span="8" v-if="itemSearch.rk.calculate !== 'BETWEEN'">
                         <el-input v-model="itemSearch.rk.value"></el-input>
                       </el-col>
-                      <el-col :span="9"
-                        v-else>
+                      <el-col :span="8" v-else>
                         <el-col :span="11">
                           <el-input v-model="itemSearch.rk.value"></el-input>
                         </el-col>
@@ -140,27 +105,62 @@
                     </el-row>
                   </el-form-item>
                 </el-form>
+                <el-form :model="searchFilter" :rules="filterRules" ref="itemSearch" label-position="right" size="mini" label-width="9%">
+                  <el-row v-for="(filter, index) in searchFilter.filters" :key="index" :gutter="10">
+                    <el-form-item :label="index === 0 ? 'Filter' : 'And'">
+                      <el-col :span="4">
+                        <el-input v-model="filter.field" placeholder="Enter attribute"></el-input>
+                      </el-col>
+                      <el-col :span="2">
+                        <el-select v-model="filter.type">
+                          <el-option v-for="item in dataTypes" :key="item.value" :label="item.label" :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="3">
+                        <el-select v-model="filter.calculate">
+                          <el-option v-for="item in operatiors" :key="item.value" :label="item.label" :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </el-col>
+                      <el-col :span="8" v-if="filter.calculate !== 'BETWEEN'">
+                        <el-input v-model="filter.valueA" placeholder="Enter value"></el-input>
+                      </el-col>
+                      <el-col :span="8" v-else>
+                        <el-col :span="11">
+                          <el-input v-model="filter.valueA" placeholder="Enter value"></el-input>
+                        </el-col>
+                        <el-col :span="2">
+                          <span>And</span>
+                        </el-col>
+                        <el-col :span="11">
+                          <el-input v-model="filter.valueB" placeholder="Enter value"></el-input>
+                        </el-col>
+                      </el-col>
+                      <el-col :span="2">
+                        <el-button type="text" icon="el-icon-circle-close-outline" @click="deleteFilter(searchFilter, index)">Delete</el-button>
+                      </el-col>
+                    </el-form-item>
+                  </el-row>
+                  <el-row>
+                    <el-col :offset="2">
+                      <el-button type="text" icon="el-icon-circle-plus" @click="addFilter(searchFilter)">Add filter</el-button>
+                    </el-col>
+                  </el-row>
+                </el-form>
               </el-row>
-              <el-row style="margin:10px 0">
-                <el-button type="primary"
-                  plain
-                  @click="search(true)">Search</el-button>
+              <el-row>
+                <el-col :offset="2">
+                  <el-button type="primary" @click="search(true)">Start search</el-button>
+                  <el-button type="text" @click="search(true)">Cancel chages</el-button>
+                </el-col>
               </el-row>
             </el-collapse-item>
           </el-collapse>
-          <el-table :data="tableItems"
-            @selection-change="handleSelectionChange"
-            @cell-click="editItem"
-            cell-class-name="table-item"
-            stripe
-            style="width: 100%;height:46vh;overflow:scroll">
+          <el-table :data="tableItems" @selection-change="handleSelectionChange" @cell-click="editItem" cell-class-name="table-item" stripe style="width: 100%;height:100%;overflow:scroll">
             <el-table-column type="selection">
             </el-table-column>
-            <el-table-column v-for="header in tableHeaders"
-              :key="header"
-              :prop="header"
-              :label="header"
-              min-width="180">
+            <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" min-width="180">
             </el-table-column>
 
           </el-table>
@@ -169,45 +169,27 @@
       <el-tab-pane>
         <span slot="label">
           <i class="el-icon-sort"></i> Index</span>
-        <el-button type="success"
-          plain
-          @click="openAddIndexDialog('addTableIndexRuleForm')">Create Index</el-button>
-        <el-button type="warning"
-          plain
-          @click="deleteTableIndex(currentSelectIndex)"
-          :disabled="deleteIndexDisabled">Delete Index</el-button>
-        <el-table :data="secondIndex"
-          v-if="secondIndex.length >0"
-          style="width: 100%;margin-top:10px;"
-          size="mini"
-          stripe
-          highlight-current-row
-          @current-change="handleIndexSelectionChange">
-          <el-table-column prop="indexName"
-            label="Name">
+        <el-button type="success" @click="openAddIndexDialog('addTableIndexRuleForm')">Create Index</el-button>
+        <el-button type="warning" @click="deleteTableIndex(currentSelectIndex)" :disabled="deleteIndexDisabled">Delete Index</el-button>
+        <el-table :data="secondIndex" v-if="secondIndex.length >0" style="width: 100%;margin-top:10px;" size="mini" stripe highlight-current-row @current-change="handleIndexSelectionChange">
+          <el-table-column prop="indexName" label="Name">
           </el-table-column>
-          <el-table-column prop="indexType"
-            label="Type">
+          <el-table-column prop="indexType" label="Type">
           </el-table-column>
-          <el-table-column prop="keySchema[0].AttributeName"
-            label="Partition Key">
+          <el-table-column prop="keySchema[0].AttributeName" label="Partition Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[0].AttributeName + ' (' + getAttributeType(scope.row.keySchema[0].AttributeName,tableSchema) + ')' }}
             </template>
           </el-table-column>
-          <el-table-column v-if="secondIndex.keySchema && secondIndex.keySchema.length > 1"
-            prop="keySchema[1].AttributeName"
-            label="Sort Key">
+          <el-table-column v-if="secondIndex.keySchema && secondIndex.keySchema.length > 1" prop="keySchema[1].AttributeName" label="Sort Key">
             <template slot-scope="scope">
               {{ scope.row.keySchema[1].AttributeName }}
               <span v-show="scope.row.keySchema[1].AttributeName">({{ getAttributeType(scope.row.keySchema[1].AttributeName,tableSchema) }})</span>
             </template>
           </el-table-column>
-          <el-table-column prop="projection.ProjectionType"
-            label="Projection Type">
+          <el-table-column prop="projection.ProjectionType" label="Projection Type">
           </el-table-column>
-          <el-table-column prop="indexStatus"
-            label="Index Status">
+          <el-table-column prop="indexStatus" label="Index Status">
           </el-table-column>
         </el-table>
       </el-tab-pane>
@@ -241,6 +223,7 @@ export default {
       itemSearchRules: {
         'hk.value': [{ required: true, message: ' ', trigger: 'blur' }]
       },
+      filterRules: {},
       itemSearch: {
         hk: {
           name: '',
@@ -263,7 +246,61 @@ export default {
       editorData: '',
       multipleSelection: [],
       currentSelectIndex: '',
-      tableBasicInfos: []
+      tableBasicInfos: [],
+      searchFilter: {
+        filters: []
+      },
+      queryFilter: {
+        filters: []
+      },
+      dataTypes: [
+        {
+          label: 'String',
+          value: 'S'
+        },
+        {
+          label: 'Binary',
+          value: 'B'
+        },
+        {
+          label: 'Numble',
+          value: 'N'
+        }
+      ],
+      operatiors: [
+        {
+          label: '=',
+          value: '='
+        },
+        {
+          label: '≠',
+          value: '≠'
+        },
+        {
+          label: '<=',
+          value: '<='
+        },
+        {
+          label: '<',
+          value: '<'
+        },
+        {
+          label: '>=',
+          value: '>='
+        },
+        {
+          label: '>',
+          value: '>'
+        },
+        {
+          label: 'Between',
+          value: 'BETWEEN'
+        },
+        {
+          label: 'Begins with',
+          value: 'BEGINS_WITH'
+        }
+      ]
     }
   },
   created() {
@@ -349,6 +386,18 @@ export default {
     }
   },
   methods: {
+    addFilter(filters) {
+      filters.filters.push({
+        field: '',
+        type: 'S',
+        calculate: '=',
+        valueA: '',
+        valusB: ''
+      })
+    },
+    deleteFilter(filters, index) {
+      filters.filters.splice(index, 1)
+    },
     updateItemSearch() {
       this.itemSearch = {
         hk: {
@@ -526,6 +575,34 @@ export default {
         }
       }
     },
+    buildExpression(filter, index, params) {
+      if (Utils.isNotEmpty(params.FilterExpression)) {
+        params.FilterExpression += ' and '
+      } else {
+        params.FilterExpression = ''
+      }
+      if (filter.calculate === 'BETWEEN') {
+        params.FilterExpression +=
+          '#k' + index + ' between :va' + index + ' and :vb' + index
+        params.ExpressionAttributeNames['#k' + index] = filter.field
+        params.ExpressionAttributeValues[':va' + index] =
+          filter.type === 'N' ? parseInt(filter.valueA) : filter.valueA
+        params.ExpressionAttributeValues[':vb' + index] =
+          filter.type === 'N' ? parseInt(filter.valueB) : filter.valueB
+      } else if (filter.calculate === 'BEGINS_WITH') {
+        params.FilterExpression +=
+          'begins_with(#k' + index + ', :va' + index + ')'
+        params.ExpressionAttributeNames['#k' + index] = filter.field
+        params.ExpressionAttributeValues[':va' + index] =
+          filter.type === 'N' ? parseInt(filter.valueA) : filter.valueA
+      } else {
+        params.FilterExpression +=
+          '#k' + index + ' ' + filter.calculate + ' :va' + index
+        params.ExpressionAttributeNames['#k' + index] = filter.field
+        params.ExpressionAttributeValues[':va' + index] =
+          filter.type === 'N' ? parseInt(filter.valueA) : filter.valueA
+      }
+    },
     scan(type) {
       const params = {
         Limit: this.limit,
@@ -543,6 +620,13 @@ export default {
       if (index < 0) {
         this.startIndex = 0
         this.exclusiveStartKeys = [null]
+      }
+      if (this.searchFilter.filters.length > 0) {
+        params.ExpressionAttributeNames = {}
+        params.ExpressionAttributeValues = {}
+        this.searchFilter.filters.forEach((filter, index) => {
+          this.buildExpression(filter, index, params)
+        })
       }
 
       this.$dynamoDB.scanTable(params, res => {
@@ -609,6 +693,11 @@ export default {
       if (this.tableIndex[parseInt(this.schemaIndex)].type === 'Index') {
         params.IndexName = this.tableIndex[parseInt(this.schemaIndex)].indexName
       }
+      if (this.searchFilter.filters.length > 0) {
+        this.searchFilter.filters.forEach((filter, index) => {
+          this.buildExpression(filter, index, params)
+        })
+      }
       console.log(params)
       this.$dynamoDB.queryTable(params, res => {
         type === 'prev' ? this.startIndex-- : this.startIndex++
@@ -629,7 +718,6 @@ export default {
       this.tableHeaders = this.defaultTableHeader
       try {
         for (const item of data) {
-          console.log(item)
           // const info = item.info.M
           let temp = {}
           this.formatItems(item, temp)
@@ -837,6 +925,8 @@ export default {
 
   h2 {
     margin-left: 10px;
+    color: inherit;
+    font-size: 20px;
   }
 }
 </style>
@@ -846,6 +936,14 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+}
+.basic-info {
+  .el-textarea.is-disabled .el-textarea__inner {
+    background-color: initial !important;
+    color: black;
+    opacity: .6;
+    font-size: 14px;
   }
 }
 </style>
