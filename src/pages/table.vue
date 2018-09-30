@@ -22,7 +22,8 @@
     </el-row>
     <el-row style="margin:10px 0;">
       <el-col :span="24">
-        <div class="loading-mask" id="loading_mask"></div>
+        <div class="loading-mask"
+          id="loading_mask"></div>
 
         <el-table :data="tables"
           style="width: 100%"
@@ -73,11 +74,12 @@
     </div>
 
     <transition name="slide-fade">
-      <div class="table-details"
+      <div class="table-wrapper"
         :style="dragStyle"
         v-if="controlTableDetails">
         <div class="drag-part"
-          @mousedown="handleMouseDown"></div>
+          @mousedown="handleMouseDown"
+          :style="dragLineStyle"></div>
         <div class="drag-title">
           <span>{{$route.params.tableName}}</span>
           <el-button type="text"
@@ -119,6 +121,16 @@ export default {
     }
   },
   computed: {
+    dragLineStyle() {
+      const bodyHeight = document.body.clientHeight - 30
+      console.log(this.height)
+      if (this.height <= bodyHeight) {
+        return { bottom: 0 }
+      } else {
+        const percent = Math.ceil(this.height / bodyHeight * 100 - 100)
+        return { bottom: `-${percent}%` }
+      }
+    },
     tableName() {
       return this.$route.params.name || ''
     },
@@ -131,7 +143,8 @@ export default {
       return { width: `${width}px` }
     },
     ...mapGetters({
-      refresh: 'refresh'
+      refresh: 'refresh',
+      height: 'height'
     })
   },
   mounted() {
@@ -349,10 +362,12 @@ export default {
   }
 }
 
-.table-details {
-  position: absolute;
+.table-wrapper {
+  position: fixed;
   right: 0;
   top: 63px;
+  bottom: 0;
+  overflow-y: scroll;
   min-height: 100vh;
   z-index: 100;
   background: #fff;
