@@ -1,6 +1,17 @@
-# dynamodb-admin
+# dynamodb manager
 
-> A Vue.js project
+We can use dynamodb manager to manage our local dynamodb. It has almost all the features. 
+If you have a better idea or function, welcome to issue.
+
+## how to use
+
+Here is a sample website that can be used http://dynamodb.yoyadoc.com, 
+You can also use docker to deploy the local version. https://hub.docker.com/r/taydy/dynamodb-manager/.
+``` bash
+docker pull taydy/dynamodb-manager
+docker run -t -p 8080:80 taydy/dynamodb-manager
+```
+or you can build the project, and put the dist directory in amazon s3 and aliyun oss.
 
 ## Build Setup
 
@@ -8,14 +19,12 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
-```
+# build image
+docker build -t taydy/dynamodb-manager .
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+# run image
+docker-compose up -d
+```

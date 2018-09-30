@@ -2,7 +2,7 @@ version: '3'
 
 services:
   dynamodb-manager:
-    image: dynamodb-manager
+    image: taydy/dynamodb-manager
     ports:
       - "8080:80"
     privileged: true
