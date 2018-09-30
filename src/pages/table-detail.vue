@@ -361,7 +361,7 @@ export default {
           value: 'B'
         },
         {
-          label: 'Numble',
+          label: 'number',
           value: 'N'
         }
       ],
@@ -369,10 +369,6 @@ export default {
         {
           label: '=',
           value: '='
-        },
-        {
-          label: '≠',
-          value: '≠'
         },
         {
           label: '<=',
