@@ -1057,9 +1057,9 @@ export default {
 <style lang="scss">
 .table-item {
   .cell {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 }
 .basic-info {

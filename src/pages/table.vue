@@ -129,7 +129,7 @@ export default {
       if (this.height <= bodyHeight) {
         return { bottom: 0 }
       } else {
-        const percent = Math.ceil(this.height / bodyHeight * 100 - 100)
+        const percent = Math.ceil(this.height / bodyHeight * 100 - 90)
         return { bottom: `-${percent}%` }
       }
     },
