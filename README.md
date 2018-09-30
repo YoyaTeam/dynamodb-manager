@@ -1,7 +1,26 @@
 # dynamodb manager
 
-We can use dynamodb manager to manage our local dynamodb. It has almost all the features. 
+This GUI tool to manage your local dynamodb.
 If you have a better idea or function, welcome to issue.
+
+## features
+
+* Table
+  * [x] Add Table
+  * [x] Edit Table
+  * [x] Delete Table
+  * [x] Connect Table
+  * [x] Add Index
+  * [x] Delete Index
+* Item
+  * [x] Add Item
+  * [x] Edit Item
+  * [x] Delete Item
+* Search (Table or Index)
+  * [x] Scan Table 
+  * [x] Query Table 
+  * [x] Search with Filter Condition 
+
 
 ## how to use
 
