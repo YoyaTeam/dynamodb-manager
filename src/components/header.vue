@@ -675,7 +675,7 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 101;
+  z-index: 2001;
 }
 .header h1 {
   margin: 15px;

@@ -23,6 +23,7 @@
     <el-row style="margin:10px 0;">
       <el-col :span="24">
         <div class="loading-mask"
+          v-show="showmask"
           id="loading_mask"></div>
 
         <el-table :data="tables"
@@ -117,7 +118,8 @@ export default {
       pageSize: PAGE_SIZE,
       tableNames: [],
       searchTableNames: [],
-      last: null
+      last: null,
+      showmask: false
     }
   },
   computed: {
@@ -223,20 +225,23 @@ export default {
       })
     },
     async renderTables(data) {
-      const startIndex = (this.currentPage - 1) * PAGE_SIZE
-      this.tables = []
+      this.showmask = true
       const loadingInstance = this.$loading({
         target: document.getElementById('loading_mask')
       })
-      for (let i = 0; i < data.length; i++) {
-        if (i >= startIndex && i < startIndex + PAGE_SIZE) {
-          await this.describeTable(data[i])
+      try {
+        const startIndex = (this.currentPage - 1) * PAGE_SIZE
+        this.tables = []
+
+        for (let i = 0; i < data.length; i++) {
+          if (i >= startIndex && i < startIndex + PAGE_SIZE) {
+            await this.describeTable(data[i])
+          }
         }
-      }
-      this.$nextTick(() => {
-        // 以服务的方式调用的 Loading 需要异步关闭
+      } finally {
         loadingInstance.close()
-      })
+        this.showmask = false
+      }
     },
     async describeTable(tableName) {
       const table = { tableName }
