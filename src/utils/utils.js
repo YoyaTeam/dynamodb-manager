@@ -1,5 +1,5 @@
 export default {
-  isEmpty (obj) {
+  isEmpty(obj) {
     return (
       typeof obj === 'undefined' ||
       obj === null ||
@@ -7,10 +7,10 @@ export default {
       obj.length === 0
     )
   },
-  isNotEmpty (obj) {
+  isNotEmpty(obj) {
     return !this.isEmpty(obj)
   },
-  clone (obj) {
+  clone(obj) {
     // Handle the 3 simple types, and null or undefined or function
     if (obj === null || typeof obj !== 'object') {
       return obj
@@ -33,7 +33,7 @@ export default {
     }
     throw new Error("Unable to clone obj! Its type isn't supported.")
   },
-  debounce (time, action) {
+  debounce(time, action) {
     let last
     return () => {
       const ctx = this
@@ -43,5 +43,12 @@ export default {
         action.apply(ctx, args)
       }, time)
     }
+  },
+  sleep(time) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        resolve()
+      }, time)
+    })
   }
 }
