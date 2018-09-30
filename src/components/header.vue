@@ -356,11 +356,7 @@ export default {
           value: 'S'
         },
         {
-          label: 'Binary',
-          value: 'B'
-        },
-        {
-          label: 'Numble',
+          label: 'number',
           value: 'N'
         }
       ],

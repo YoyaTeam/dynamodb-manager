@@ -132,7 +132,7 @@ export default {
           value: 'B'
         },
         {
-          label: 'Numble',
+          label: 'number',
           value: 'N'
         }
       ],
