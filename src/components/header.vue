@@ -421,6 +421,8 @@ export default {
         const endpoint = localStorage.getItem('endpoint')
         this.UPDATE_ENDPOINT(endpoint || this.endpoints[0])
         this.UPDATE_REGION(localStorage.getItem('region') || this.regions[0])
+        this.UPDATE_ACCESS_KEY(localStorage.getItem(`${endpoint}_access_key`) || 'patsnap')
+        this.UPDATE_SECRET_KEY(localStorage.getItem(`${endpoint}_secret_key`) || 'patsnap')
       } else {
         this.endpoints = []
         this.openAddDatabaseDialog()
@@ -489,6 +491,8 @@ export default {
           )
           localStorage.setItem('region', config.region)
           localStorage.setItem('endpoint', config.endpoint)
+          localStorage.setItem(`${config.endpoint}_access_key`, config.accessKeyId)
+          localStorage.setItem(`${config.endpoint}_secret_key`, config.secretAccessKey)
           this.refreshEndpoint()
           this.dialogVisible = false
           // var dynamodb = new AWS.DynamoDB(config)
@@ -660,6 +664,8 @@ export default {
     ...mapMutations({
       UPDATE_ENDPOINT: 'UPDATE_ENDPOINT',
       UPDATE_REGION: 'UPDATE_REGION',
+      UPDATE_ACCESS_KEY: 'UPDATE_ACCESS_KEY',
+      UPDATE_SECRET_KEY: 'UPDATE_SECRET_KEY',
       SET_REFRESH: 'SET_REFRESH'
     })
   }
