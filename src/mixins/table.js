@@ -36,7 +36,7 @@ export default {
       if (this.$utils.isEmpty(this.$tableSchema.schema) && this.$utils.isNotEmpty(this.tableName)) {
         this.initTableName(this.tableName)
       }
-      this.autoInit(val)
+      // this.autoInit(val)
     }
   },
   methods: {

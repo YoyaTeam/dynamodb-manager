@@ -48,10 +48,11 @@ export default {
   // },
   mounted: function() {
     this.activeName = this.$route.query.tabActive || this.activeName
-    if (this.activeName === 'info') {
-      this.autoInit()
+    if (this.activeName === localStorage.getItem(GLOBAL_SETTINGS_FAVORITE_TABLE_TAB)) {
+      this.$nextTick(() => {
+        this.initTableName(this.tableName)
+      })
     }
-    //
   },
   methods: {
     autoInit() {
