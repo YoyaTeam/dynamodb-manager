@@ -67,7 +67,6 @@ export default {
 #navMenu {
   height: 100%;
   text-align: left;
-  width: 200px;
 }
 .el-submenu .el-menu-item {
   min-width: 100px;
