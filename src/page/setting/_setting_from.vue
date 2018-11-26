@@ -1,6 +1,6 @@
 <template>
   <div id="setting">
-    <el-col :span="12">
+    <el-col :span="24">
       <el-form ref="form" :model="setting" label-position="left" label-width="150px">
         <el-form-item :label="$t('setting_form.label_language')">
           <el-radio-group v-model="setting.language" @change="languageChange">

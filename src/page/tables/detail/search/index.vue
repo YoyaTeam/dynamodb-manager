@@ -20,7 +20,7 @@
       </el-collapse-item>
     </el-collapse>
     <div class="data-list">
-      <el-table v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:scroll" @selection-change="handleSelectionChange" stripe>
+      <el-table v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:auto" @selection-change="handleSelectionChange" stripe>
         <el-table-column type="selection">
         </el-table-column>
 
