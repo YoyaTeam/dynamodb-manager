@@ -9,6 +9,9 @@
     <el-col :span="24 - navWidth" class="max-height">
       <router-view></router-view>
     </el-col>
+    <div class="github">
+      <a href="https://github.com/YoyaTeam/dynamodb-manager" target="_blank"><img width="30" height="30" src="@/assets/img/github.svg"></a>
+    </div>
   </el-row>
 </template>
 
@@ -27,7 +30,7 @@ export default {
   },
   watch: {
     isCollapsed(val) {
-      val ? this.navWidth = 1 : this.navWidth = 3
+      val ? (this.navWidth = 1) : (this.navWidth = 3)
     }
   },
   computed: {
@@ -65,5 +68,11 @@ export default {
 }
 .nav-layout-sider-trigger-collapseed .el-icon-arrow-left {
   transform: rotateZ(180deg);
+}
+.github {
+  cursor: pointer;
+  position: fixed;
+  right: 20px;
+  bottom: 10px;
 }
 </style>

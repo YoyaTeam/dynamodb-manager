@@ -40,7 +40,6 @@ import {
   LOCAL_STORAGE_DYNAMODB_CONFIGS,
   LOCAL_STORAGE_CURRENT_APPLY_CONFIG
 } from '@/constants'
-import Utils from '@/utils/utils'
 import { mapMutations } from 'vuex'
 import DynamodbInstance from '@/utils/dynamodb'
 export default {
@@ -93,7 +92,7 @@ export default {
       this.configVisivle = true
     },
     handleEdit(index, row) {
-      this.currentConfig = Utils.clone(row)
+      this.currentConfig = this.$utils.clone(row)
       this.configVisivle = true
     },
     handleDelete(index, row) {
@@ -135,15 +134,16 @@ export default {
       )
     },
     config_save(config) {
+      let tempConfig = this.$utils.clone(config)
       this.configVisivle = false
       for (var index in this.configs) {
-        if (this.configs[index].id === config.id) {
-          this.configs.splice(index, 1, config)
+        if (this.configs[index].id === tempConfig.id) {
+          this.configs.splice(index, 1, tempConfig)
           this.$message.success(this.$t('message.success.config_update'))
           return
         }
       }
-      this.configs.unshift(config)
+      this.configs.unshift(tempConfig)
       this.$message.success(this.$t('message.success.config_update'))
     }
   }

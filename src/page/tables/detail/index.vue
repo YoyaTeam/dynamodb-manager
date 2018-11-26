@@ -99,6 +99,7 @@ export default {
 #table-info .el-tabs__header {
   position: fixed !important;
   right: 20px !important;
+  top: 40px !important;
   height: auto !important;
   z-index: 1000;
 }
