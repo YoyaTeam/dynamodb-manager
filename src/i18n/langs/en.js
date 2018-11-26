@@ -67,7 +67,8 @@ const en = {
       label_sort_key: 'Sort Key',
       label_extra_sort: 'Sort',
       sort_ascending: 'Ascending',
-      sort_descending: 'Descending'
+      sort_descending: 'Descending',
+      update_header_show_dialog_title: 'Header Setting'
     },
     index: {
       button_created_index: 'Create Index',

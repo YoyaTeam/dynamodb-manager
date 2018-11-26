@@ -67,7 +67,8 @@ const zh = {
       label_sort_key: '排序键',
       label_extra_sort: '排序方式',
       sort_ascending: '升序',
-      sort_descending: '降序'
+      sort_descending: '降序',
+      update_header_show_dialog_title: '表头显示设置'
     },
     index: {
       button_created_index: '创建索引',
