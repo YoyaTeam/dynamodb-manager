@@ -28,7 +28,7 @@
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" placement="top" width="600">
               <span slot="content">{{ scope.row[header] }}</span>
-              <span v-if="header !== $tableSchema.hashKey">{{ typeof scope.row[header] === 'object' ? JSON.stringify(scope.row[header]) : scope.row[header] }}</span>
+              <span v-if="header !== $tableSchema.hashKey" @dblclick="copy(scope.row[header])">{{ typeof scope.row[header] === 'object' ? JSON.stringify(scope.row[header]) : scope.row[header] }}</span>
               <span style="color:#409EFF;width:250px" v-else @click="editItem(scope.row)">{{ scope.row[header] }}</span>
             </el-tooltip>
           </template>
@@ -255,6 +255,21 @@ export default {
     },
     refreshTable() {
       this.search(this.searchParams, this.type, () => {})
+    },
+    copy(val) {
+      let text = val
+      if (val instanceof Array || val instanceof Object) {
+        text = JSON.stringify(val)
+      }
+      this.$copyText(text).then(
+        res => {
+          this.$message.success(this.$t('message.success.copy'))
+        },
+        err => {
+          console.log(err)
+          this.$message.error(this.$t('message.failure.copy'))
+        }
+      )
     }
   }
 }
