@@ -35,8 +35,9 @@ export default {
       console.log('---' + val)
       if (this.$utils.isEmpty(this.$tableSchema.schema) && this.$utils.isNotEmpty(this.tableName)) {
         this.initTableName(this.tableName)
+      } else {
+        this.autoInit(val)
       }
-      // this.autoInit(val)
     }
   },
   methods: {
