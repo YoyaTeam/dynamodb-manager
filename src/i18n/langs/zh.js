@@ -94,7 +94,8 @@ const zh = {
       button_add_sort_key: '添加排序键',
       button_add_index: '添加索引',
       button_add: '添加',
-      button_as_lsi: '创建为本地二级索引'
+      button_as_lsi: '创建为本地二级索引',
+      button_import_scheam: '导入 Schema'
     }
   },
   confirm: {

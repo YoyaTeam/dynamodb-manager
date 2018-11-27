@@ -94,7 +94,8 @@ const en = {
       button_add_sort_key: 'Add sort key',
       button_add_index: 'Add Index',
       button_add: 'Add',
-      button_as_lsi: 'Create As Local Secondary Index'
+      button_as_lsi: 'Create As Local Secondary Index',
+      button_import_scheam: 'Import Schema'
     }
   },
   confirm: {
