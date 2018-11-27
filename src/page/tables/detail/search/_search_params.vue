@@ -264,6 +264,7 @@ export default {
       if (this.tableGroupIndex.length > 0) {
         this.indexSelected = this.tableGroupIndex[0].datas[0].indexName
       }
+      this.$emit('updateGroupIndex', groupIndex)
     },
     addFilter(filterSearchParams) {
       filterSearchParams.filters.push(this.$utils.clone(this.defaultFilter))

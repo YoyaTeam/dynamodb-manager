@@ -58,6 +58,8 @@ const zh = {
       search_result_title: '正在查看 {start} 到 {end} 个项目',
       search_type_scan: '扫描',
       search_type_query: '查询',
+      table: '表',
+      index: '索引',
       search_add_filter: '添加筛选条件',
       search_filter: '筛选条件',
       search_filter_relate: '和',
@@ -67,7 +69,9 @@ const zh = {
       label_sort_key: '排序键',
       label_extra_sort: '排序方式',
       sort_ascending: '升序',
-      sort_descending: '降序'
+      sort_descending: '降序',
+      update_header_show_dialog_title: '显示/隐藏列',
+      update_header_show_dialog_table_header_cloumns: '列'
     },
     index: {
       button_created_index: '创建索引',
@@ -90,7 +94,8 @@ const zh = {
       button_add_sort_key: '添加排序键',
       button_add_index: '添加索引',
       button_add: '添加',
-      button_as_lsi: '创建为本地二级索引'
+      button_as_lsi: '创建为本地二级索引',
+      button_import_scheam: '导入 Schema'
     }
   },
   confirm: {

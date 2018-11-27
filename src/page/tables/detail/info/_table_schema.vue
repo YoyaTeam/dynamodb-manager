@@ -25,7 +25,7 @@ export default {
   height: 100%;
 }
 .vjs__tree .vjs__tree__content {
-  padding-left: 2em;
+  padding-left: 2em !important;
   font-size: 12px;
 }
 .vjs__tree .vjs__value__string {

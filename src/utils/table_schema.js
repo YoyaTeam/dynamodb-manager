@@ -90,9 +90,9 @@ class DynamodbTableSchema {
         },
         projection: {
           projectionType: globalSecondaryIndex.Projection.ProjectionType,
-          nonKeyAttributes: globalSecondaryIndex.Projection.NonKeyAttributes,
-          provisionedThroughput: globalSecondaryIndex.Projection.ProvisionedThroughput
+          nonKeyAttributes: globalSecondaryIndex.Projection.NonKeyAttributes
         },
+        provisionedThroughput: globalSecondaryIndex.ProvisionedThroughput,
         status: globalSecondaryIndex.IndexStatus
       })
     }

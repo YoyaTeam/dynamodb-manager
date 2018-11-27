@@ -16,32 +16,34 @@
           </div>
         </template>
         <!-- search params -->
-        <search-params ref="searchParams" :limit="limit" :tableSchema="tableSchema" :items="tableHeaders" @search="search" @initSearch="initSearch"></search-params>
+        <search-params ref="searchParams" :limit="limit" :tableSchema="tableSchema" :items="tableHeaders" @updateGroupIndex="updateGroupIndex" @search="search" @initSearch="initSearch"></search-params>
       </el-collapse-item>
     </el-collapse>
     <div class="data-list">
-      <el-table v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:auto" @selection-change="handleSelectionChange" stripe>
+      <div class="table-setting">
+        <i class="fa fa-refresh" @click="refreshTable"></i>
+        <i class="fa fa-gear" @click="headerSelectDialogShow = true"></i>
+      </div>
+      <el-table border resizable v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:auto"
+        @selection-change="handleSelectionChange" stripe>
         <el-table-column type="selection">
         </el-table-column>
-
-        <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" :min-width="header === $tableSchema.hashKey ? 200 : 180">
+        <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" :min-width="header === $tableSchema.hashKey ? 200 : 180"  show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" placement="top" width="600">
-              <span slot="content">{{ scope.row[header] }}</span>
               <span v-if="header !== $tableSchema.hashKey" @dblclick="copy(scope.row[header])">{{ typeof scope.row[header] === 'object' ? JSON.stringify(scope.row[header]) : scope.row[header] }}</span>
               <span style="color:#409EFF;width:250px" v-else @click="editItem(scope.row)">{{ scope.row[header] }}</span>
-            </el-tooltip>
           </template>
         </el-table-column>
-
       </el-table>
     </div>
     <json-editor :showEditor="showEditor" :editorText="editorText" @close="editorClose" @refresh="refreshTable"></json-editor>
+    <header-select :data="itemsShow" :visible="headerSelectDialogShow" @updateSelectedHeader="updateSelectedHeader" @close="headerSelectDialogShow = false"></header-select>
   </div>
 </template>
 
 <script>
 import SearchParams from './_search_params'
+import HeaderSelect from '@/components/dialog/_table_header_select'
 import JsonEditor from '@/components/editor/json-editor'
 import {
   GLOBAL_SETTINGS_AUTO_SCAN,
@@ -50,7 +52,8 @@ import {
 export default {
   components: {
     SearchParams,
-    JsonEditor
+    JsonEditor,
+    HeaderSelect
   },
   data() {
     return {
@@ -70,7 +73,10 @@ export default {
       loading: false,
       showEditor: false,
       editorText: {},
-      autoScan: localStorage.getItem(GLOBAL_SETTINGS_AUTO_SCAN)
+      autoScan: localStorage.getItem(GLOBAL_SETTINGS_AUTO_SCAN),
+      itemsShow: [],
+      headerSelectDialogShow: false,
+      groupIndexes: []
     }
   },
   computed: {
@@ -88,6 +94,7 @@ export default {
       this.tableRefreshFinished()
     },
     autoSearch() {
+      this.items_show = []
       if (this.autoScan === 'true') {
         this.$refs.searchParams.search()
       }
@@ -97,9 +104,13 @@ export default {
       console.log(this.tableSchema)
       this.tableHeaders = this.defaultTableHeader
       this.tableItems = []
+      this.itemsShow = []
       this.$nextTick(() => {
         this.autoSearch()
       })
+    },
+    updateGroupIndex(indexes) {
+      this.groupIndexes = indexes
     },
     createItem() {
       let item = {
@@ -175,14 +186,33 @@ export default {
       this.start = 0
       this.end = 0
     },
+    updateSearchTitle(params, type) {
+      console.log(params)
+      let titleType = this.$t('table.item_search.search_type_' + type)
+      let indexName = this.$utils.isEmpty(params.IndexName) ? params.TableName : params.IndexName
+      console.log(this.groupIndexes)
+      console.log(titleType, indexName)
+      let indexTitle
+      this.groupIndexes.forEach(group => {
+        group.datas.forEach(index => {
+          if (index.indexName === indexName) {
+            indexTitle = `[${group.type}] ${index.indexName}: ${index.keySchema.hashKey}${index.keySchema.rangeKey ? ', ' + index.keySchema.rangeKey : ''}`
+          }
+        })
+      })
+      this.searchTitle = `${titleType}: ${indexTitle}`
+    },
     search(
       params,
       type,
       callback = result => {
-        this.start = this.end
-        this.end = this.start + result.Count
+        if (this.exclusiveStartKeys.length === 0 || JSON.stringify(result.LastEvaluatedKey) !== JSON.stringify(this.exclusiveStartKeys[this.startIndex])) {
+          this.start = this.end
+          this.end = this.start + result.Count
+        }
       }
     ) {
+      this.updateSearchTitle(params, type)
       this.$refs.searchParams.searchStart()
       this.tableItems = []
       this.loading = true
@@ -218,11 +248,20 @@ export default {
       datas.forEach(item => {
         this.tableItems.push(this.formatItem(item))
       })
+      this.tableHeaders.forEach(key => {
+        if (this.itemsShow.filter(item => item.key === key).length === 0) {
+          this.itemsShow.push({
+            key: key,
+            show: true
+          })
+        }
+      })
+      console.log(this.itemsShow)
     },
     formatItem(item) {
       const temp = {}
       Object.keys(item).forEach(key => {
-        if (this.tableHeaders.indexOf(key) === -1) {
+        if (this.tableHeaders.indexOf(key) === -1 && this.itemsShow.filter(item => item.key === key).length === 0) {
           this.tableHeaders.push(key)
         }
         // if (typeof item[key] === 'object') {
@@ -254,6 +293,7 @@ export default {
       this.showEditor = false
     },
     refreshTable() {
+      console.log('refresh table')
       this.search(this.searchParams, this.type, () => {})
     },
     copy(val) {
@@ -270,6 +310,26 @@ export default {
           this.$message.error(this.$t('message.failure.copy'))
         }
       )
+    },
+    updateSelectedHeader(datas) {
+      for (let item of this.itemsShow) {
+        let index = this.tableHeaders.indexOf(item.key)
+        if (datas.filter(entry => entry.key === item.key).length === 0) {
+          item.show = false
+          if (index > -1) {
+            this.tableHeaders.splice(index, 1)
+          }
+        } else {
+          item.show = true
+          if (index === -1) {
+            this.tableHeaders.push(item.key)
+          }
+        }
+      }
+      this.headerSelectDialogShow = false
+      console.log('update success')
+      console.log(this.itemsShow)
+      console.log(this.tableHeaders)
     }
   }
 }
@@ -284,5 +344,13 @@ export default {
 #table-data-search .detail-pagination {
   float: right;
   margin-right: 20px;
+}
+.table-setting {
+  float: right;
+  margin-top: 5px;
+}
+.table-setting i {
+  margin: 0 3px;
+  cursor: pointer;
 }
 </style>

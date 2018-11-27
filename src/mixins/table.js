@@ -35,8 +35,9 @@ export default {
       console.log('---' + val)
       if (this.$utils.isEmpty(this.$tableSchema.schema) && this.$utils.isNotEmpty(this.tableName)) {
         this.initTableName(this.tableName)
+      } else {
+        this.autoInit(val)
       }
-      // this.autoInit(val)
     }
   },
   methods: {
@@ -50,8 +51,9 @@ export default {
       console.log('init config finished')
     },
     initTableName(tableName) {
-      console.log('init table name : ' + tableName)
-      this.describeTable(tableName)
+      let name = tableName || this.$tableSchema.tableName
+      console.log('init table name : ' + name)
+      this.describeTable(name)
     },
     tableRefreshFinished() {
       console.log('table refresh finished')
