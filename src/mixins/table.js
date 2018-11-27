@@ -51,8 +51,9 @@ export default {
       console.log('init config finished')
     },
     initTableName(tableName) {
-      console.log('init table name : ' + tableName)
-      this.describeTable(tableName)
+      let name = tableName || this.$tableSchema.tableName
+      console.log('init table name : ' + name)
+      this.describeTable(name)
     },
     tableRefreshFinished() {
       console.log('table refresh finished')
