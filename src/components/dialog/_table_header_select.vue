@@ -1,7 +1,7 @@
 <template>
 <el-dialog id="table-header-select" :close-on-click-modal="false" style="text-align:left" :title="$t('table.item_search.update_header_show_dialog_title')" :visible.sync="header_select_dialogVisible" width="300px" @closed="close">
   <el-table ref="multipleTable" :data="tableDatas" @selection-change="handleSelectionChange" tooltip-effect="dark" style="width: 100%">
-    <el-table-column type="selection" width="55">
+    <el-table-column type="selection" width="55" aria-disabled="true">
     </el-table-column>
     <el-table-column prop="key" label="item" show-overflow-tooltip>
     </el-table-column>

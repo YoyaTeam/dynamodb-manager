@@ -24,7 +24,7 @@
         <i class="fa fa-refresh" @click="refreshTable"></i>
         <i class="fa fa-gear" @click="headerSelectDialogShow = true"></i>
       </div>
-      <el-table v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:auto"
+      <el-table border resizable v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:auto"
         @selection-change="handleSelectionChange" stripe>
         <el-table-column type="selection">
         </el-table-column>
