@@ -20,8 +20,7 @@ export default {
 }
 </script>
 
-<style>
-#table-basic-info {
-  padding: 0 10px;
-}
+<style lang="sass">
+#table-basic-info
+  padding: 0 10px
 </style>

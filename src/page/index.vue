@@ -44,35 +44,30 @@ export default {
 }
 </script>
 
-<style>
-.max-height {
-  height: 100%;
-}
-.nav-layout-sider-trigger {
-  width: 12.4%;
-  position: fixed;
-  bottom: 0;
-  text-align: center;
-  cursor: pointer;
-  height: 48px;
-  line-height: 48px;
-  color: #fff;
-  background: #515a6e;
-  z-index: 1000;
-  -webkit-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-}
-.nav-layout-sider-trigger-collapseed {
-  width: 60px;
-  transition: none;
-}
-.nav-layout-sider-trigger-collapseed .el-icon-arrow-left {
-  transform: rotateZ(180deg);
-}
-.github {
-  cursor: pointer;
-  position: fixed;
-  right: 20px;
-  bottom: 10px;
-}
+<style lang="sass">
+.max-height
+  height: 100%
+.nav-layout-sider-trigger
+  width: 12.4%
+  position: fixed
+  bottom: 0
+  text-align: center
+  cursor: pointer
+  height: 48px
+  line-height: 48px
+  color: #fff
+  background: #515a6e
+  z-index: 1000
+  -webkit-transition: all 0.5s ease-in-out
+  transition: all 0.5s ease-in-out
+.nav-layout-sider-trigger-collapseed
+  width: 60px
+  transition: none
+.nav-layout-sider-trigger-collapseed .el-icon-arrow-left
+  transform: rotateZ(180deg)
+.github
+  cursor: pointer
+  position: fixed
+  right: 20px
+  bottom: 10px
 </style>

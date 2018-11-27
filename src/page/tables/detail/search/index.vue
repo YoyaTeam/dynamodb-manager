@@ -275,14 +275,12 @@ export default {
 }
 </script>
 
-<style>
-#table-data-search .table-item .cell {
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-#table-data-search .detail-pagination {
-  float: right;
-  margin-right: 20px;
-}
+<style lang="sass">
+#table-data-search .table-item .cell
+  overflow: hidden !important
+  text-overflow: ellipsis !important
+  white-space: nowrap !important
+#table-data-search .detail-pagination
+  float: right
+  margin-right: 20px
 </style>

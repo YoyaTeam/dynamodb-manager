@@ -63,18 +63,18 @@ export default {
 }
 </script>
 
-<style>
-#navMenu {
-  height: 100%;
-  text-align: left;
-}
-.el-submenu .el-menu-item {
-  min-width: 100px !important;
-}
-/* #navMenu ul {
-  transition: all 0.5s ease-in-out !important;
-}
-.el-submenu__title {
-  transition: all 0s ease-in-out !important;
-} */
+<style lang="sass">
+#navMenu
+  height: 100%
+  text-align: left
+
+.el-submenu .el-menu-item
+  min-width: 100px !important
+
+// #navMenu ul {
+//   transition: all 0.5s ease-in-out !important;
+// }
+// .el-submenu__title {
+//   transition: all 0s ease-in-out !important;
+// }
 </style>

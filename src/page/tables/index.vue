@@ -47,8 +47,7 @@ export default {
 }
 </script>
 
-<style>
-.el-table {
-  color: #303133 !important;
-}
+<style lang="sass">
+.el-table
+  color: #303133 !important
 </style>

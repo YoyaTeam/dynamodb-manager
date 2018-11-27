@@ -145,18 +145,15 @@ export default {
 }
 </script>
 
-<style>
-#table-basic-info {
-  padding: 0 10px;
-}
-#table-basic-info .fa {
-  margin-left: 5px;
-}
+<style lang="sass">
+#table-basic-info
+  padding: 0 10px
+#table-basic-info .fa
+  margin-left: 5px
 .el-carousel__mask,
 .el-cascader-menu,
 .el-cascader-menu__item.is-disabled:hover,
 .el-collapse-item__header,
-.el-collapse-item__wrap {
-  background-color: transparent !important;
-}
+.el-collapse-item__wrap
+  background-color: transparent !important
 </style>

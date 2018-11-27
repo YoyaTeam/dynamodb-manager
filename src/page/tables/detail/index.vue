@@ -76,34 +76,27 @@ export default {
 }
 </script>
 
-<style>
-#table-info {
-  background-color: #f6f5f7;
-  text-align: left;
-}
-#table-info .container {
-  padding: 0 20px;
-  height: 100vh;
-  overflow-y: scroll;
-}
-#table-info .container .el-tabs {
-  padding: 40px 0;
-}
-#table-info .el-table__body-wrapper {
-  background-color: #f6f5f7;
-}
+<style lang="sass">
+#table-info
+  background-color: #f6f5f7
+  text-align: left
+#table-info .container
+  padding: 0 20px
+  height: 100vh
+  overflow-y: scroll
+#table-info .container .el-tabs
+  padding: 40px 0
+#table-info .el-table__body-wrapper
+  background-color: #f6f5f7
 #table-info .el-table th,
-#table-info .el-table tr {
-  background-color: #f6f5f7;
-}
-#table-info .el-tabs__header {
-  position: fixed !important;
-  right: 20px !important;
-  top: 40px !important;
-  height: auto !important;
-  z-index: 1000;
-}
-#table-info .el-tabs__content {
-  padding-right: 150px;
-}
+#table-info .el-table tr
+  background-color: #f6f5f7
+#table-info .el-tabs__header
+  position: fixed !important
+  right: 20px !important
+  top: 40px !important
+  height: auto !important
+  z-index: 1000
+#table-info .el-tabs__content
+  padding-right: 150px
 </style>
