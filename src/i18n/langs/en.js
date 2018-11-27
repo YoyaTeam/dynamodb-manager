@@ -58,6 +58,8 @@ const en = {
       search_result_title: 'Viewing {start} to {end} Items',
       search_type_scan: 'Scan',
       search_type_query: 'Query',
+      table: 'Table',
+      index: 'Index',
       search_add_filter: 'Add filter',
       search_filter: 'Filter',
       search_filter_relate: 'And',
@@ -68,7 +70,8 @@ const en = {
       label_extra_sort: 'Sort',
       sort_ascending: 'Ascending',
       sort_descending: 'Descending',
-      update_header_show_dialog_title: 'Header Setting'
+      update_header_show_dialog_title: 'Show/hide columns',
+      update_header_show_dialog_table_header_cloumns: 'Columns'
     },
     index: {
       button_created_index: 'Create Index',

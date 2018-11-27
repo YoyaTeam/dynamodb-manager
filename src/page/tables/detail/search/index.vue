@@ -16,7 +16,7 @@
           </div>
         </template>
         <!-- search params -->
-        <search-params ref="searchParams" :limit="limit" :tableSchema="tableSchema" :items="tableHeaders" @search="search" @initSearch="initSearch"></search-params>
+        <search-params ref="searchParams" :limit="limit" :tableSchema="tableSchema" :items="tableHeaders" @updateGroupIndex="updateGroupIndex" @search="search" @initSearch="initSearch"></search-params>
       </el-collapse-item>
     </el-collapse>
     <div class="data-list">
@@ -75,7 +75,8 @@ export default {
       editorText: {},
       autoScan: localStorage.getItem(GLOBAL_SETTINGS_AUTO_SCAN),
       itemsShow: [],
-      headerSelectDialogShow: false
+      headerSelectDialogShow: false,
+      groupIndexes: []
     }
   },
   computed: {
@@ -107,6 +108,9 @@ export default {
       this.$nextTick(() => {
         this.autoSearch()
       })
+    },
+    updateGroupIndex(indexes) {
+      this.groupIndexes = indexes
     },
     createItem() {
       let item = {
@@ -182,6 +186,22 @@ export default {
       this.start = 0
       this.end = 0
     },
+    updateSearchTitle(params, type) {
+      console.log(params)
+      let titleType = this.$t('table.item_search.search_type_' + type)
+      let indexName = this.$utils.isEmpty(params.IndexName) ? params.TableName : params.IndexName
+      console.log(this.groupIndexes)
+      console.log(titleType, indexName)
+      let indexTitle
+      this.groupIndexes.forEach(group => {
+        group.datas.forEach(index => {
+          if (index.indexName === indexName) {
+            indexTitle = `[${group.type}] ${index.indexName}: ${index.keySchema.hashKey}${index.keySchema.rangeKey ? ', ' + index.keySchema.rangeKey : ''}`
+          }
+        })
+      })
+      this.searchTitle = `${titleType}: ${indexTitle}`
+    },
     search(
       params,
       type,
@@ -192,6 +212,7 @@ export default {
         }
       }
     ) {
+      this.updateSearchTitle(params, type)
       this.$refs.searchParams.searchStart()
       this.tableItems = []
       this.loading = true
