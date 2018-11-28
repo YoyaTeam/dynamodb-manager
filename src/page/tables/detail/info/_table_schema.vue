@@ -31,4 +31,4 @@ export default {
 .vjs__tree
   font-family: 'Avenir', Helvetica, Arial, sans-serif !important
   font-size: 12px
-</style>
+<style>

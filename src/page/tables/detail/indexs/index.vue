@@ -70,8 +70,8 @@ export default {
         if (
           !this.validAndAddAttributeDefinitions(
             attributeDefinitions,
-            tableIndex.partitionKey,
-            tableIndex.partitionKeyType
+            tableIndex.sortKey,
+            tableIndex.sortKeyType
           )
         ) {
           return
@@ -108,7 +108,8 @@ export default {
       this.$dynamodb.updateTable(params, res => {
         this.$message.success(this.$t('message.success.add_index').replace('{index_name}', tableIndex.indexName))
         this.add_index_dialogVisible = false
-        this.initTableName(this.$tableSchema.tableName)
+        this.$tableSchema.schema = res.data.TableDescription
+        this.autoInit()
       })
     },
     deleteIndex(tableIndex) {
@@ -138,7 +139,9 @@ export default {
           }
           this.$dynamodb.updateTable(params, res => {
             this.$message.success(this.$t('message.success.delete_index').replace('{index_name}', tableIndex.indexName))
-            this.initTableName(this.$tableSchema.tableName)
+            console.log(res)
+            this.$tableSchema.schema = res.data.TableDescription
+            this.autoInit()
           })
         })
         .catch(() => {
@@ -150,21 +153,22 @@ export default {
       attributeName,
       attributeType
     ) {
-      for (var attributeDefinition of attributeDefinitions) {
-        if (
-          attributeDefinition.AttributeName === attributeName &&
-          attributeDefinition.AttributeType !== attributeType
-        ) {
+      const sames = attributeDefinitions.filter(attributeDefinition => attributeDefinition.AttributeName === attributeName)
+      console.log(sames)
+      if (sames.length === 0) {
+        attributeDefinitions.push({
+          AttributeName: attributeName,
+          AttributeType: attributeType
+        })
+      } else {
+        if (sames[0].AttributeName === attributeName &&
+          sames[0].AttributeType !== attributeType) {
           this.$message.warning(
             this.$t('message.failure.attribute_name_not_match').replace('{attribute_name}', attributeName)
           )
           return false
         }
       }
-      attributeDefinitions.push({
-        AttributeName: attributeName,
-        AttributeType: attributeType
-      })
       return true
     },
     indexDialogClose() {

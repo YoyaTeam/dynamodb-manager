@@ -24,8 +24,8 @@ export default {
   },
   data() {
     return {
-      isCollapsed: false,
-      navWidth: 3
+      isCollapsed: true,
+      navWidth: 1
     }
   },
   watch: {
