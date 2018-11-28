@@ -81,6 +81,7 @@ export default {
 </script>
 
 <style lang="sass">
-#index-list .local-index-list
-  margin-top: 50px
+#index-list
+  .local-index-list
+    margin-top: 60px
 </style>

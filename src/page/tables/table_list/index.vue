@@ -147,32 +147,15 @@ export default {
 #table-list
   background-color: #fefeff
   height: 100%
-  padding-left: 5px
-#table-list .table-action
-  text-align: left
-  padding: 10px 5px 5px
-  height: 2%
-#table-list .table-search
-  padding: 10px 5px 5px
-  height: 2%
-  margin-top: 5px
+  padding: 0 5px
+  .table-action
+    text-align: left
+    padding: 10px 5px 5px
+    height: 2%
+  .table-search
+    padding: 10px 5px 5px
+    height: 2%
+    margin-top: 5px
 .el-table__body tr
   cursor: pointer
-// .el-table--striped
-//   .el-table__body
-//   tr.el-table__row--striped.current-row
-//   td,
-// .el-table__body tr.current-row > td,
-// .el-table__body tr.hover-row.current-row > td,
-// .el-table__body tr.hover-row.el-table__row--striped.current-row > td,
-// .el-table__body tr.hover-row.el-table__row--striped > td,
-// .el-table__body tr.hover-row > td {
-//   background-color: #67c23a;
-//   color: #fefeff;
-//   font-weight: 500;
-// }
-// .el-table--enable-row-hover .el-table__body tr:hover > td {
-//   background-color: #67c23a;
-//   color: #fefeff;
-// }
 </style>
