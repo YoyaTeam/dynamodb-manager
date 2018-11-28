@@ -72,9 +72,8 @@ export default {
 }
 </script>
 
-<style scoped>
-#setting {
-  padding: 50px 50px;
-  text-align: left;
-}
+<style lang="sass" scoped>
+#setting
+  padding: 50px 50px
+  text-align: left
 </style>

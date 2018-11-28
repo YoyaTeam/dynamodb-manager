@@ -20,19 +20,15 @@ export default {
 }
 </script>
 
+<style lang="sass">
+#table-schema
+  height: 100%
+.vjs__tree .vjs__tree__content
+  padding-left: 2em
+  font-size: 12px
+.vjs__tree .vjs__value__string
+  color: #009688
+.vjs__tree
+  font-family: 'Avenir', Helvetica, Arial, sans-serif !important
+  font-size: 12px
 <style>
-#table-schema {
-  height: 100%;
-}
-.vjs__tree .vjs__tree__content {
-  padding-left: 2em !important;
-  font-size: 12px;
-}
-.vjs__tree .vjs__value__string {
-  color: #009688;
-}
-.vjs__tree {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif !important;
-  font-size: 12px;
-}
-</style>

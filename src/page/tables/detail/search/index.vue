@@ -335,22 +335,12 @@ export default {
 }
 </script>
 
+<style lang="sass">
+#table-data-search .table-item .cell
+  overflow: hidden !important
+  text-overflow: ellipsis !important
+  white-space: nowrap !important
+#table-data-search .detail-pagination
+  float: right
+  margin-right: 20px
 <style>
-#table-data-search .table-item .cell {
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-#table-data-search .detail-pagination {
-  float: right;
-  margin-right: 20px;
-}
-.table-setting {
-  float: right;
-  margin-top: 5px;
-}
-.table-setting i {
-  margin: 0 3px;
-  cursor: pointer;
-}
-</style>

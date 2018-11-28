@@ -132,21 +132,18 @@ export default {
 }
 </script>
 
-<style scoped>
-.my-autocomplete li {
-  line-height: normal;
-  padding: 7px;
-}
+<style lang="sass" scoped>
+.my-autocomplete li
+  line-height: normal
+  padding: 7px
 
-.my-autocomplete li .endpoint {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  float: right;
-  color: rgb(132, 146, 166);
-  font-size: 13px;
-}
+.my-autocomplete li .endpoint
+  text-overflow: ellipsis
+  overflow: hidden
+  float: right
+  color: rgb(132, 146, 166)
+  font-size: 13px
 
-.my-autocomplete li .highlighted .region-name {
-  color: #ddd;
-}
+.my-autocomplete li .highlighted .region-name
+  color: #ddd
 </style>

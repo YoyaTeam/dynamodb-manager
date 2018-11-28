@@ -150,15 +150,13 @@ export default {
 }
 </script>
 
-<style scoped>
-#config-list {
-  padding: 50px 50px;
-  text-align: left;
-}
+<style lang="sass" scoped>
+#config-list
+  padding: 50px 50px
+  text-align: left
 </style>
 
-<style>
-.el-table .success-row {
-  background: #f0f9eb;
-}
+<style lang="sass">
+.el-table .success-row
+  background: #f0f9eb
 </style>

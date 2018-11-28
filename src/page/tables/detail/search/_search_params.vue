@@ -477,19 +477,15 @@ export default {
 }
 </script>
 
-<style>
-#search-params .el-select {
-  width: 100%;
-}
-#search-params .search-header {
-  margin-bottom: 10px;
-}
-#search-params .el-row .disabled {
-  color: #909399;
-}
-#search-params .divide-line {
-  margin-top: 10px;
-  margin-bottom: 10px;
-  border-top: 1px solid #dcdfe6;
-}
+<style lang="sass">
+#search-params .el-select
+  width: 100%
+#search-params .search-header
+  margin-bottom: 10px
+#search-params .el-row .disabled
+  color: #909399
+#search-params .divide-line
+  margin-top: 10px
+  margin-bottom: 10px
+  border-top: 1px solid #dcdfe6
 </style>
