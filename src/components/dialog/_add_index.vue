@@ -126,6 +126,10 @@ export default {
         indexName: '',
         projectionType: 'ALL',
         nonKeyAttributes: [],
+        provisionedThroughput: {
+          ReadCapacityUnits: 5,
+          WriteCapacityUnits: 5
+        },
         indexType: 'GSI'
       },
       dataTypes: DYNAMODB_KEY_TYPE,
@@ -146,7 +150,8 @@ export default {
             sortKey: tableIndex.sortKey,
             sortKeyType: tableIndex.sortKeyType,
             projectionType: tableIndex.projectionType,
-            nonKeyAttributes: tableIndex.nonKeyAttributes
+            nonKeyAttributes: tableIndex.nonKeyAttributes,
+            provisionedThroughput: tableIndex.provisionedThroughput
           }
           this.$emit('addIndex', index)
         } else {
