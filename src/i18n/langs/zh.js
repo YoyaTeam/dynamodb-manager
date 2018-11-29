@@ -31,7 +31,8 @@ const zh = {
     table_header_secret_key: 'Secret Key',
     dialog_title: '配置',
     dialog_button_test_connection: '连接测试',
-    dialog_button_save: '添加'
+    dialog_button_save: '添加',
+    dialog_button_save_and_apply: '添加并应用'
   },
   table: {
     table_list: {

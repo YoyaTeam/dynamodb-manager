@@ -31,7 +31,8 @@ const en = {
     table_header_secret_key: 'Secret Key',
     dialog_title: 'Config',
     dialog_button_test_connection: 'Test Connection',
-    dialog_button_save: 'Save'
+    dialog_button_save: 'Save',
+    dialog_button_save_and_apply: 'Save And Apply'
   },
   table: {
     table_list: {

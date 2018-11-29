@@ -38,7 +38,8 @@ export default {
   mixins: [table],
   computed: {
     ...mapGetters({
-      tableName: 'tableName'
+      tableName: 'tableName',
+      config: 'config'
     }),
     routeTableName() {
       return this.$route.params.tableName || this.tableName
@@ -56,6 +57,10 @@ export default {
       this.listTables()
     },
     async listTables() {
+      if (this.$utils.isEmpty(this.config)) {
+        this.tableNames = []
+        return
+      }
       this.loading = true
       this.tableNames = []
       this.listTableByLastEvaluatedTableName()

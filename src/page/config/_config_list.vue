@@ -106,6 +106,10 @@ export default {
         }
       )
         .then(() => {
+          if (this.applyConfig.id === row.id) {
+            this.applyConfig = {}
+            this.UPDATE_TABLE_NAME('')
+          }
           this.configs.splice(index, 1)
           this.$message.success(this.$t('message.success.delete_success'))
         })
@@ -133,18 +137,25 @@ export default {
         }
       )
     },
-    config_save(config) {
+    config_save(config, apply) {
       let tempConfig = this.$utils.clone(config)
       this.configVisivle = false
       for (var index in this.configs) {
         if (this.configs[index].id === tempConfig.id) {
           this.configs.splice(index, 1, tempConfig)
           this.$message.success(this.$t('message.success.config_update'))
+          if (this.applyConfig.id === tempConfig.id || apply) {
+            this.handleApply(this.configs.indexOf(tempConfig), tempConfig)
+          }
           return
         }
       }
       this.configs.unshift(tempConfig)
       this.$message.success(this.$t('message.success.config_update'))
+      console.log(apply)
+      if (apply) {
+        this.handleApply(0, tempConfig)
+      }
     }
   }
 }

@@ -34,6 +34,7 @@
     <div slot="footer" class="dialog-footer">
       <!-- <el-button @click="dialogVisible = false">{{$t('config.dialog_button_test_connection')}}</el-button> -->
       <el-button type="primary" @click="save(config)">{{$t('config.dialog_button_save')}}</el-button>
+      <el-button type="primary" @click="save(config, true)">{{$t('config.dialog_button_save_and_apply')}}</el-button>
     </div>
   </el-dialog>
 </template>
@@ -110,12 +111,12 @@ export default {
     endpointHandleSelect(item) {
       this.config.region = item.region
     },
-    save(config) {
+    save(config, apply = false) {
       this.$refs['ruleForm'].validate(valid => {
         if (valid) {
           config.createdTime = config.createdTime || new Date()
           config.id = config.id || uuid4()
-          this.$emit('config-save', config)
+          this.$emit('config-save', config, apply)
         } else {
           return false
         }
