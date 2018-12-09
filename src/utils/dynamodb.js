@@ -100,13 +100,13 @@ class DynamoDBInstance {
       .send()
   }
 
-  async putItem(params, successCallback, completeCallback) {
+  async putItem(params, successCallback, errorCallback = (err) => {
+    errNotify(`putItem Table Err`, err.message)
+  }, completeCallback) {
     const res = await docClient.put(params)
     res
       .on('success', successCallback || defaultCallback)
-      .on('error', (err) => {
-        errNotify(`putItem Table Err`, err.message)
-      })
+      .on('error', errorCallback)
       .on('complete', completeCallback || defaultCallback)
       .send()
   }

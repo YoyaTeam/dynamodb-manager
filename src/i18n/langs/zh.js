@@ -52,6 +52,7 @@ const zh = {
     },
     item_search: {
       button_create_item: '创建项目',
+      button_inport_file: '导入 JSON',
       button_delete_item: '删除项目',
       button_start_search: '开始搜索',
       button_cancel_change: '取消更改',
@@ -72,7 +73,17 @@ const zh = {
       sort_ascending: '升序',
       sort_descending: '降序',
       update_header_show_dialog_title: '显示/隐藏列',
-      update_header_show_dialog_table_header_cloumns: '列'
+      update_header_show_dialog_table_header_cloumns: '列',
+      i_refresh: '刷新',
+      i_setting: '列设置',
+      i_download: '下载当前查询结果'
+    },
+    json_file_import: {
+      import_title: '导入 JSON 文件',
+      uploading_title: '正在导入中...',
+      upload_text_first: '将文件拖到此处，或',
+      upload_text_second: '点击上传',
+      comment: '只能上传 JSON 文件'
     },
     index: {
       button_created_index: '创建索引',
@@ -120,7 +131,11 @@ const zh = {
       delete_index: '索引名不匹配，删除操作已取消!',
       attribute_name_not_match: '{attribute_name} 和已有类型不匹配!',
       copy: '无法复制到粘贴板!',
-      filter: '过滤器属性和值不能为空!'
+      filter: '过滤器属性和值不能为空!',
+      only_json_file: '只支持 JSON 文件!',
+      error_json: 'Json 格式不正确',
+      no_data: '没有有效数据!',
+      import_failure: '数据导入完成，成功 {success} 条， 失败 {error} 条，已下载失败数据！'
     },
     success: {
       delete: '删除成功!',
@@ -131,7 +146,8 @@ const zh = {
       create_table: '创建表 {table_name} 成功!',
       add_index: '添加索引 {index_name} 成功!',
       delete_index: '删除索引 {index_name} 成功!',
-      copy: '已添加到粘贴板!'
+      copy: '已添加到粘贴板!',
+      import_success: '数据导入成功!'
     }
   },
   dynamodb_endpoints_regions: [{
@@ -192,11 +208,11 @@ const zh = {
     options: [{
       regionName: '中国 (北京)',
       region: 'cn-north-1',
-      endpoint: 'https://dynamodb.cn-north-1.amazonaws.com'
+      endpoint: 'https://dynamodb.cn-north-1.amazonaws.com.cn'
     }, {
       regionName: '中国 (宁夏)',
       region: 'cn-northwest-1',
-      endpoint: 'https://dynamodb.cn-northwest-1.amazonaws.com'
+      endpoint: 'https://dynamodb.cn-northwest-1.amazonaws.com.cn'
     }]
   }, {
     region: '欧洲',

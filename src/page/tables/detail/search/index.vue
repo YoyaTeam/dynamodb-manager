@@ -2,6 +2,7 @@
   <div id="table-data-search">
     <el-row style="margin:10px 0">
       <el-button size="mini" type="success" @click="createItem">{{$t('table.item_search.button_create_item')}}</el-button>
+      <el-button size="mini" type="info" @click="fileDialogVisible = true">{{$t('table.item_search.button_inport_file')}}</el-button>
       <el-button size="mini" type="warning" @click="deleteItems(multipleSelection)" :disabled="multipleSelection.length === 0">{{$t('table.item_search.button_delete_item')}}</el-button>
     </el-row>
     <el-collapse v-model="activeNames">
@@ -21,8 +22,15 @@
     </el-collapse>
     <div class="data-list">
       <div class="table-setting">
-        <i class="fa fa-refresh" @click="refreshTable"></i>
-        <i class="fa fa-gear" @click="headerSelectDialogShow = true"></i>
+        <el-tooltip class="item" effect="dark" :content="$t('table.item_search.i_refresh')" placement="top">
+          <i class="fa fa-refresh" @click="refreshTable"></i>
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" :content="$t('table.item_search.i_setting')" placement="top">
+          <i class="fa fa-gear" @click="headerSelectDialogShow = true"></i>
+        </el-tooltip>
+        <el-tooltip class="item" effect="dark" :content="$t('table.item_search.i_download')" placement="top">
+          <i class="fa fa-cloud-download" @click="download(tableItems)"></i>
+        </el-tooltip>
       </div>
       <el-table border resizable v-loading="loading" :data="tableItems" tooltip-effect="dark" cell-class-name="table-item" style="width: 100%;height:100%;overflow:auto"
         @selection-change="handleSelectionChange" stripe>
@@ -36,6 +44,7 @@
         </el-table-column>
       </el-table>
     </div>
+    <file-import :visible="fileDialogVisible" @close="fileDialogVisible = false"></file-import>
     <json-editor :showEditor="showEditor" :editorText="editorText" @close="editorClose" @refresh="refreshTable"></json-editor>
     <header-select :data="itemsShow" :visible="headerSelectDialogShow" @updateSelectedHeader="updateSelectedHeader" @close="headerSelectDialogShow = false"></header-select>
   </div>
@@ -45,6 +54,8 @@
 import SearchParams from './_search_params'
 import HeaderSelect from '@/components/dialog/_table_header_select'
 import JsonEditor from '@/components/editor/json-editor'
+import FileImport from '@/components/dialog/_json_file_import'
+import FileSaver from 'file-saver'
 import {
   GLOBAL_SETTINGS_AUTO_SCAN,
   GLOBAL_SETTINGS_PAGE_SIZE
@@ -53,7 +64,8 @@ export default {
   components: {
     SearchParams,
     JsonEditor,
-    HeaderSelect
+    HeaderSelect,
+    FileImport
   },
   data() {
     return {
@@ -76,7 +88,8 @@ export default {
       autoScan: localStorage.getItem(GLOBAL_SETTINGS_AUTO_SCAN),
       itemsShow: [],
       headerSelectDialogShow: false,
-      groupIndexes: []
+      groupIndexes: [],
+      fileDialogVisible: false
     }
   },
   computed: {
@@ -330,6 +343,10 @@ export default {
       console.log('update success')
       console.log(this.itemsShow)
       console.log(this.tableHeaders)
+    },
+    download(datas) {
+      var file = new File([JSON.stringify(datas, null, 4)], `${this.$tableSchema.tableName}.json`, {type: 'text/plain;charset=utf-8'})
+      FileSaver.saveAs(file)
     }
   }
 }
@@ -350,5 +367,6 @@ export default {
       float: right
       margin-top: 10px
     i
+      margin-right: 5px
       cursor: pointer
 </style>

@@ -52,6 +52,7 @@ const en = {
     },
     item_search: {
       button_create_item: 'Create Item',
+      button_inport_file: 'Import Json',
       button_delete_item: 'Delete Item',
       button_start_search: 'Start Search',
       button_cancel_change: 'Cancel Change',
@@ -72,7 +73,17 @@ const en = {
       sort_ascending: 'Ascending',
       sort_descending: 'Descending',
       update_header_show_dialog_title: 'Show/hide columns',
-      update_header_show_dialog_table_header_cloumns: 'Columns'
+      update_header_show_dialog_table_header_cloumns: 'Columns',
+      i_refresh: 'Refresh',
+      i_setting: 'Columns setting',
+      i_download: 'Download current query results'
+    },
+    json_file_import: {
+      import_title: 'Import JSON File',
+      uploading_title: 'Uploading',
+      upload_text_first: 'Drag files here, or',
+      upload_text_second: 'click upload',
+      comment: 'Can only upload JSON files'
     },
     index: {
       button_created_index: 'Create Index',
@@ -120,7 +131,11 @@ const en = {
       delete_index: 'the index name is wrong, delete operation canceled!',
       attribute_name_not_match: 'Type of {attribute_name} does not match existing data type',
       copy: 'Can not copy!',
-      filter: 'Filter attribute and value must not be empty!'
+      filter: 'Filter attribute and value must not be empty!',
+      only_json_file: 'Only JSON files are supported!',
+      error_json: 'Json format is incorrect',
+      no_data: 'No data!',
+      import_failure: 'Data import completed, successful {success}, failed {error}, Failed data has been downloaded!'
     },
     success: {
       delete: 'Delete Success!',
@@ -131,7 +146,8 @@ const en = {
       create_table: 'Create table {table_name} succeeded!',
       add_index: 'Add index {index_name} succeeded!',
       delete_index: 'Delete index {index_name} succeeded!',
-      copy: 'Added to pasteboard!'
+      copy: 'Added to pasteboard!',
+      import_success: 'Data import succeeded'
     }
   },
   dynamodb_endpoints_regions: [{
@@ -192,11 +208,11 @@ const en = {
     options: [{
       regionName: 'China (Beijing)',
       region: 'cn-north-1',
-      endpoint: 'https://dynamodb.cn-north-1.amazonaws.com'
+      endpoint: 'https://dynamodb.cn-north-1.amazonaws.com.cn'
     }, {
       regionName: 'China (Ningxia)',
       region: 'cn-northwest-1',
-      endpoint: 'https://dynamodb.cn-northwest-1.amazonaws.com'
+      endpoint: 'https://dynamodb.cn-northwest-1.amazonaws.com.cn'
     }]
   }, {
     region: 'EU',
