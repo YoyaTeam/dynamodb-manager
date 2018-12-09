@@ -16,10 +16,11 @@ If you have a better idea or function, welcome to issue.
   * [x] Add Item
   * [x] Edit Item
   * [x] Delete Item
+  * [x] import/export Items
 * Search (Table or Index)
   * [x] Scan Table 
   * [x] Query Table 
-  * [x] Search with Filter Condition 
+  * [x] Filter Condition 
 
 ## how to use
 
