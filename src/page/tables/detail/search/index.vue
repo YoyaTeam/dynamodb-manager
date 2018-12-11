@@ -38,6 +38,7 @@
         </el-table-column>
         <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" :min-width="header === $tableSchema.hashKey ? 200 : 180"  show-overflow-tooltip>
           <template slot-scope="scope">
+              <i class="fa fa-clipboard" aria-hidden="true" v-if="header === $tableSchema.hashKey" @click="copy(scope.row[header])"></i>
               <span v-if="header !== $tableSchema.hashKey" @dblclick="copy(scope.row[header])">{{ typeof scope.row[header] === 'object' ? JSON.stringify(scope.row[header]) : scope.row[header] }}</span>
               <span style="color:#409EFF;width:250px" v-else @click="editItem(scope.row)">{{ scope.row[header] }}</span>
           </template>
@@ -308,6 +309,12 @@ export default {
     refreshTable() {
       console.log('refresh table')
       this.search(this.searchParams, this.type, () => {})
+    },
+    cellDblclick(row, column, cell, event) {
+      console.log(row)
+      console.log(column)
+      console.log(cell)
+      console.log(event)
     },
     copy(val) {
       let text = val
