@@ -1,0 +1,18 @@
+/* dark styling of the editor */
+div.jsoneditor,
+div.jsoneditor-menu {
+  border-color: #2F4056;
+}
+div.jsoneditor-menu {
+  background-color: #2F4056;
+}
+
+tr.jsoneditor-highlight,
+tr.jsoneditor-selected {
+  background-color: #ffffab;
+}
+
+div.jsoneditor-tree div.jsoneditor-tree-inner {
+    padding-bottom: 20px;
+}
+
