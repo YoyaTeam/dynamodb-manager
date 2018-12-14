@@ -15,6 +15,7 @@ const en = {
     label_favorite_table_tab: 'Favorite table tab',
     label_auto_scan: 'Automatic scan operation when accessing the items tab',
     label_page_size: 'Items tab page size',
+    label_item_edit_type: 'Items editor mode',
     default: 'Default'
   },
   config: {

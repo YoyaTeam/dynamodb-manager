@@ -36,7 +36,7 @@
         @selection-change="handleSelectionChange" stripe>
         <el-table-column type="selection">
         </el-table-column>
-        <el-table-column v-for="header in tableHeaders" :key="header" :prop="header" :label="header" :min-width="header === $tableSchema.hashKey ? 200 : 180"  show-overflow-tooltip>
+        <el-table-column sortable v-for="header in tableHeaders" :key="header" :prop="header" :label="header" :min-width="header === $tableSchema.hashKey ? 200 : 180"  show-overflow-tooltip>
           <template slot-scope="scope">
               <i class="fa fa-clipboard" aria-hidden="true" v-if="header === $tableSchema.hashKey" @click="copy(scope.row[header])"></i>
               <span v-if="header !== $tableSchema.hashKey" @dblclick="copy(scope.row[header])">{{ typeof scope.row[header] === 'object' ? JSON.stringify(scope.row[header]) : scope.row[header] }}</span>
@@ -361,6 +361,8 @@ export default {
 
 <style lang="sass">
 #table-data-search
+  .el-collapse-item__header
+    color: rgb(64, 158, 255)
   .table-item
     .cell
       overflow: hidden

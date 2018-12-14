@@ -15,6 +15,7 @@ const zh = {
     label_favorite_table_tab: '首次进入标签页',
     label_auto_scan: '访问项目选项卡时自动执行扫描操作',
     label_page_size: '分页查询数量',
+    label_item_edit_type: '项目编辑器模式',
     default: '默认'
   },
   config: {

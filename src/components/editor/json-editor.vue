@@ -1,6 +1,6 @@
 <template>
 <div class="json-editor">
-  <el-dialog title="Edit Item" :visible.sync="isShow" width="70%" :before-close="handleClose" :close-on-click-modal="false">
+  <el-dialog title="Edit Item" :visible.sync="isShow" width="70%" top="5vh" :before-close="handleClose" :close-on-click-modal="false">
     <div id="jsoneditor"></div>
     <span slot="footer" class="dialog-footer">
         <el-button type="success" @click="putItem">Save Item</el-button>
@@ -13,11 +13,10 @@
 <script>
 /* eslint-disable */
 import ace from 'ace-builds'
-import {
-  Range,
-  EditSession
-} from 'ace-builds'
 import jsoneditor from 'jsoneditor'
+import {
+  GLOBAL_SETTINGS_ITEM_EDIT_TYPE
+} from '@/constants'
 
 export default {
   props: {
@@ -45,7 +44,6 @@ export default {
     },
     editorText(val) {
       if (!this.editor) {
-        // this.initEditor()
         return
       }
       this.setValue(val)
@@ -54,24 +52,10 @@ export default {
   methods: {
     initEditor() {
       this.$nextTick(() => {
-        // if (this.editor || !document.getElementById('editor')) {
-        //   return
-        // }
-
-        // this.editor = ace.edit(null, {
-        //   maxLines: 50,
-        //   minLines: 10,
-        //   value: JSON.stringify(this.editorText, null, '\t'),
-        //   mode: 'ace/mode/json',
-        //   bug: 1
-        // })
-
-        // this.editor.selection.setRange(new Range(0, 0, 0, 3))
-        // document.getElementById('editor').appendChild(this.editor.container)
         var container = document.getElementById('jsoneditor')
         var options = {
           modes: ['text', 'code', 'tree', 'form', 'view'],
-          mode: 'code',
+          mode: localStorage.getItem(GLOBAL_SETTINGS_ITEM_EDIT_TYPE) || 'form',
           ace: ace,
           indentation: 4
         }
@@ -107,7 +91,7 @@ export default {
   .el-dialog__body
     padding: 0 10px
 #jsoneditor
-  height: 600px
+  height: 700px
   .ace-jsoneditor.ace_editor
     font-family: 'Avenir', Helvetica, Arial, sans-serif
     line-height: 1.3
