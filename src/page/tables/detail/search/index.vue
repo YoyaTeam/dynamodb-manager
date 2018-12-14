@@ -21,6 +21,10 @@
       </el-collapse-item>
     </el-collapse>
     <div class="data-list">
+      <div class="consumed-capacity" v-if="consumedCapacity">
+        <span>Consumed Capacity:</span>
+        <span>{{consumedCapacity}}</span>
+      </div>
       <div class="table-setting">
         <el-tooltip class="item" effect="dark" :content="$t('table.item_search.i_refresh')" placement="top">
           <i class="fa fa-refresh" @click="refreshTable"></i>
@@ -90,7 +94,8 @@ export default {
       itemsShow: [],
       headerSelectDialogShow: false,
       groupIndexes: [],
-      fileDialogVisible: false
+      fileDialogVisible: false,
+      consumedCapacity: null
     }
   },
   computed: {
@@ -230,6 +235,7 @@ export default {
       this.$refs.searchParams.searchStart()
       this.tableItems = []
       this.loading = true
+      this.consumedCapacity = null
       this.type = type
       this.$dynamodb[`${type}Table`](
         params,
@@ -248,6 +254,9 @@ export default {
           // console.log(result.ConsumedCapacity.CapacityUnits)
           console.log(result.ScannedCount)
           this.getTableItemsAndHeaders(result.Items)
+          if (result.ConsumedCapacity) {
+            this.consumedCapacity = result.ConsumedCapacity.CapacityUnits
+          }
           this.$refs.searchParams.searchFinished()
         },
         () => {
@@ -372,6 +381,13 @@ export default {
     float: right
     margin-right: 20px
   .data-list
+    .consumed-capacity
+      display: inline
+      float: left
+      font-size: 13px
+      margin-top: 10px
+      color: #2F4056
+      font-weight: 500
     .table-setting
       float: right
       margin-top: 10px

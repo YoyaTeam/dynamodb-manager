@@ -38,6 +38,16 @@
             <el-radio label="false">No</el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item :label="$t('setting_form.label_max_retry')">
+          <div style="width: 500px">
+          <el-slider v-model="setting.maxRetry" @change="maxRetryChange" :max="5" :min="0" show-input></el-slider>
+          </div>
+        </el-form-item>
+        <el-form-item :label="$t('setting_form.label_timeout')">
+          <div style="width: 500px">
+          <el-slider v-model="setting.connectionTimeout" @change="connectionTimeoutChange" :max="120" :min="1" show-input></el-slider>
+          </div>
+        </el-form-item>
       </el-form>
     </el-col>
   </div>
@@ -45,12 +55,17 @@
 
 <script>
 import {
+  LOCAL_STORAGE_CURRENT_APPLY_CONFIG,
   GLOBAL_SETTINGS_LANGUAGE,
   GLOBAL_SETTINGS_FAVORITE_TABLE_TAB,
   GLOBAL_SETTINGS_AUTO_SCAN,
   GLOBAL_SETTINGS_PAGE_SIZE,
-  GLOBAL_SETTINGS_ITEM_EDIT_TYPE
+  GLOBAL_SETTINGS_ITEM_EDIT_TYPE,
+  GLOBAL_SETTINGS_MAX_RETRY,
+  GLOBAL_SETTINGS_CONNECTION_TIMEOUT
 } from '@/constants'
+import { mapMutations } from 'vuex'
+import table from '@/mixins/table'
 export default {
   data() {
     return {
@@ -61,11 +76,17 @@ export default {
         ),
         autoScan: localStorage.getItem(GLOBAL_SETTINGS_AUTO_SCAN),
         pageSize: localStorage.getItem(GLOBAL_SETTINGS_PAGE_SIZE),
-        itemEditType: localStorage.getItem(GLOBAL_SETTINGS_ITEM_EDIT_TYPE)
+        itemEditType: localStorage.getItem(GLOBAL_SETTINGS_ITEM_EDIT_TYPE),
+        maxRetry: parseInt(localStorage.getItem(GLOBAL_SETTINGS_MAX_RETRY) || 0),
+        connectionTimeout: parseInt(localStorage.getItem(GLOBAL_SETTINGS_CONNECTION_TIMEOUT) || 1)
       }
     }
   },
+  mixins: [table],
   methods: {
+    ...mapMutations({
+      UPDATE_CONFIG: 'UPDATE_CONFIG'
+    }),
     languageChange(val) {
       localStorage.setItem(GLOBAL_SETTINGS_LANGUAGE, val)
       this.$i18n.locale = val
@@ -81,6 +102,22 @@ export default {
     },
     itemEditTypeChange(val) {
       localStorage.setItem(GLOBAL_SETTINGS_ITEM_EDIT_TYPE, val)
+    },
+    maxRetryChange(val) {
+      localStorage.setItem(GLOBAL_SETTINGS_MAX_RETRY, val)
+      this.updateConfig()
+    },
+    connectionTimeoutChange(val) {
+      localStorage.setItem(GLOBAL_SETTINGS_CONNECTION_TIMEOUT, val)
+      this.updateConfig()
+    },
+    updateConfig() {
+      var config = JSON.parse(localStorage.getItem(LOCAL_STORAGE_CURRENT_APPLY_CONFIG))
+      // just for deep update
+      config.maxRetries = this.setting.maxRetry
+      if (this.$utils.isNotEmpty(config)) {
+        this.UPDATE_CONFIG(config)
+      }
     }
   }
 }

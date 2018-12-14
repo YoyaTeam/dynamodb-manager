@@ -16,6 +16,8 @@ const zh = {
     label_auto_scan: '访问项目选项卡时自动执行扫描操作',
     label_page_size: '分页查询数量',
     label_item_edit_type: '项目编辑器模式',
+    label_max_retry: '最大重试次数',
+    label_timeout: '连接超时时间 (秒)',
     default: '默认'
   },
   config: {

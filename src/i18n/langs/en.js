@@ -16,6 +16,8 @@ const en = {
     label_auto_scan: 'Automatic scan operation when accessing the items tab',
     label_page_size: 'Items tab page size',
     label_item_edit_type: 'Items editor mode',
+    label_max_retry: 'Max Retry',
+    label_timeout: 'Connection Timeout (s)',
     default: 'Default'
   },
   config: {

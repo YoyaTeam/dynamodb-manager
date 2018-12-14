@@ -1,6 +1,10 @@
 import {
   Notification
 } from 'element-ui'
+import {
+  GLOBAL_SETTINGS_MAX_RETRY,
+  GLOBAL_SETTINGS_CONNECTION_TIMEOUT
+} from '@/constants'
 const AWS = require('aws-sdk')
 let dynamodb = new AWS.DynamoDB()
 let docClient = new AWS.DynamoDB.DocumentClient()
@@ -17,10 +21,10 @@ const errNotify = (title, message) => {
 class DynamoDBInstance {
   constructor(config) {
     config.httpOptions = {
-      connectTimeout: 5 * 1000,
-      timeout: 5 * 1000
+      connectTimeout: 1000 * parseInt(localStorage.getItem(GLOBAL_SETTINGS_CONNECTION_TIMEOUT) || 5),
+      timeout: 1000 * parseInt(localStorage.getItem(GLOBAL_SETTINGS_CONNECTION_TIMEOUT) || 5)
     }
-    config.maxRetries = 1
+    config.maxRetries = parseInt(localStorage.getItem(GLOBAL_SETTINGS_MAX_RETRY) || 1)
     this._config = config
     this.params = {}
     this.refresh(config)
@@ -31,6 +35,8 @@ class DynamoDBInstance {
   }
 
   set config(config) {
+    console.log('-----------update config')
+    console.log(config)
     this._config = config
     this.refresh(config)
   }
