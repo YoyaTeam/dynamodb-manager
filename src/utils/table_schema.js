@@ -74,7 +74,8 @@ class DynamodbTableSchema {
         rangeKeyType: this.rangeKeyType
       },
       projection: {},
-      status: this.tableStatus
+      status: this.tableStatus,
+      provisionedThroughput: this.ProvisionedThroughput
     }]
     for (let globalSecondaryIndex of this.GlobalSecondaryIndexes) {
       let hashKey = this.getSchemaKey('HASH', globalSecondaryIndex.KeySchema)
@@ -110,9 +111,9 @@ class DynamodbTableSchema {
         },
         projection: {
           projectionType: localSecondaryIndex.Projection.ProjectionType,
-          nonKeyAttributes: localSecondaryIndex.Projection.NonKeyAttributes,
-          provisionedThroughput: localSecondaryIndex.Projection.ProvisionedThroughput
+          nonKeyAttributes: localSecondaryIndex.Projection.NonKeyAttributes
         },
+        provisionedThroughput: this.ProvisionedThroughput,
         status: this.tableStatus
       })
     }

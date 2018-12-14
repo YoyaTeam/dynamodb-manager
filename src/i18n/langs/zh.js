@@ -95,6 +95,7 @@ const zh = {
       table_header_type: '索引类型',
       table_header_partition_key: '项目键',
       table_header_sort_key: '排序键',
+      table_header_throughput: '吞吐量',
       table_header_projection_type: '属性',
       table_header_index_status: '状态'
     },

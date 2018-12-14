@@ -17,6 +17,11 @@
                     {{ `${scope.row.keySchema.rangeKey} ${scope.row.keySchema.rangeKeyType ? '(' + scope.row.keySchema.rangeKeyType + ')' : scope.row.keySchema.rangeKeyType}` }}
                 </template>
             </el-table-column>
+            <el-table-column prop="provisionedThroughput" :label="$t('table.index.table_header_throughput')" width="170">
+                <template slot-scope="scope">
+                    {{ `${scope.row.provisionedThroughput.ReadCapacityUnits}(R) ${scope.row.provisionedThroughput.WriteCapacityUnits}(W)` }}
+                </template>
+            </el-table-column>
             <el-table-column prop="projectionType" :label="$t('table.index.table_header_projection_type')">
                 <template slot-scope="scope">
                     {{ scope.row.projection.projectionType }}
@@ -47,6 +52,11 @@
                         {{ `${scope.row.keySchema.rangeKey} ${scope.row.keySchema.rangeKeyType ? '(' + scope.row.keySchema.rangeKeyType + ')' : scope.row.keySchema.rangeKeyType}` }}
                     </template>
                 </el-table-column>
+                <el-table-column prop="provisionedThroughput" :label="$t('table.index.table_header_throughput')" width="170">
+                <template slot-scope="scope">
+                    {{ `${scope.row.provisionedThroughput.ReadCapacityUnits}(R) ${scope.row.provisionedThroughput.WriteCapacityUnits}(W)` }}
+                </template>
+            </el-table-column>
                 <el-table-column prop="projectionType" :label="$t('table.index.table_header_projection_type')">
                     <template slot-scope="scope">
                         {{ scope.row.projection.projectionType }}

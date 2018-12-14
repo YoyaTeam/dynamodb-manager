@@ -95,6 +95,7 @@ const en = {
       table_header_type: 'Type',
       table_header_partition_key: 'Partition Key',
       table_header_sort_key: 'Sort Key',
+      table_header_throughput: 'Provisioned Throughput',
       table_header_projection_type: 'Projection Type',
       table_header_index_status: 'Status'
     },

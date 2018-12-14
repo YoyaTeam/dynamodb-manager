@@ -1,8 +1,8 @@
 <template>
   <div id="table-list">
     <div class="table-action">
-      <el-button style="width: 45%;padding: 7px 4px;" size="mini" type="primary" plain @click="openCreateTableDialog">{{$t('table.table_list.button_create_table')}}</el-button>
-      <el-button style="width: 45%;padding: 7px 4px;" size="mini" type="warning" plain :disabled="!currentRow" @click="deleteTable">{{$t('table.table_list.button_delete_table')}}</el-button>
+      <el-button style="width: 45%;padding: 7px 4px;" size="mini" type="primary" @click="openCreateTableDialog">{{$t('table.table_list.button_create_table')}}</el-button>
+      <el-button style="width: 45%;padding: 7px 4px;" size="mini" type="warning" :disabled="!currentRow" @click="deleteTable">{{$t('table.table_list.button_delete_table')}}</el-button>
     </div>
     <div class="table-search">
       <el-input v-model="search" size="mini" :placeholder="$t('table.table_list.input_search_placeholder')" />
