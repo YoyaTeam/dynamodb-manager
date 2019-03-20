@@ -34,6 +34,22 @@ docker run -t -p 8080:80 taydy/dynamodb-manager
 ```
 or you can build the project, and put the dist directory in amazon s3 and aliyun oss.
 
+## show me
+### setting
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/setting.png)
+
+### config
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/config.png)
+
+### table info
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/tableinfo.png)
+
+### item search
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/item_search.png)
+
+### table index
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/index.png)
+
 ## Build Setup
 
 ``` bash
