@@ -65,3 +65,7 @@ docker build -t taydy/dynamodb-manager .
 # run image
 docker-compose up -d
 ```
+
+## Issue
+-  applying the configuration but get error "Configuration is not in effect!"
+    please see [Cors](https://github.com/YoyaTeam/dynamodb-manager/issues/9) 
