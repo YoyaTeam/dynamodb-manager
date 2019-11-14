@@ -1,9 +1,9 @@
 # dynamodb manager
 
 This GUI tool to manage your local dynamodb.
-If you have a better idea or function, welcome to issue.
+If you have a better idea, welcome to issue.
 
-![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/dynamodb-manager.gif)
+![image](http://image.yoyadoc.com/github/dynamodb-manager.gif)
 
 ## features
 
@@ -36,19 +36,19 @@ or you can build the project, and put the dist directory in amazon s3 and aliyun
 
 ## show me
 ### setting
-![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/setting.png)
+![image](http://image.yoyadoc.com/github/setting.png)
 
 ### config
-![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/config.png)
+![image](http://image.yoyadoc.com/github/config.png)
 
 ### table info
-![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/tableinfo.png)
+![image](http://image.yoyadoc.com/github/tableinfo.png)
 
 ### item search
-![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/item_search.png)
+![image](http://image.yoyadoc.com/github/item_search.png)
 
 ### table index
-![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/index.png)
+![image](http://image.yoyadoc.com/github/index.png)
 
 ## Build Setup
 
