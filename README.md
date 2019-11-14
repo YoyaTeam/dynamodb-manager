@@ -3,7 +3,7 @@
 This GUI tool to manage your local dynamodb.
 If you have a better idea, welcome to issue.
 
-![image](https://yoyadoc-image.oss-cn-shanghai.aliyuncs.com/github/dynamodb-manager.gif)
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/dynamodb-manager.gif)
 
 ## features
 
