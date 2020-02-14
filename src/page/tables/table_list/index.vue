@@ -8,7 +8,7 @@
       <el-input v-model="search" size="mini" :placeholder="$t('table.table_list.input_search_placeholder')" />
     </div>
     <el-table id="table-name-list" v-loading="loading" height="90%" ref="singleTable" :data="tableNames.filter(data => !search || data.tableName.toLowerCase().includes(search.toLowerCase()))" highlight-current-row @current-change="handleCurrentChange" style="width:100%;overflow-y:auto;margin-top:6%">
-      <el-table-column type="index" width="40">
+      <el-table-column type="index" width="42">
       </el-table-column>
       <el-table-column property="tableName" :label="$t('table.table_list.table_header_table_name')" sortable>
       </el-table-column>
