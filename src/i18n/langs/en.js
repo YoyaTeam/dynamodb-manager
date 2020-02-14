@@ -58,7 +58,7 @@ const en = {
       button_inport_file: 'Import Json',
       button_delete_item: 'Delete Item',
       button_start_search: 'Start Search',
-      button_cancel_change: 'Cancel Change',
+      button_cancel_change: 'Reset',
       search_default_title: 'Click search to scan table',
       search_result_title: 'Viewing {start} to {end} Items',
       search_type_scan: 'Scan',

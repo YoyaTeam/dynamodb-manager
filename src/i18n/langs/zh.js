@@ -58,7 +58,7 @@ const zh = {
       button_inport_file: '导入 JSON',
       button_delete_item: '删除项目',
       button_start_search: '开始搜索',
-      button_cancel_change: '取消更改',
+      button_cancel_change: '重置',
       search_default_title: '点击搜索按钮开始扫描',
       search_result_title: '正在查看 {start} 到 {end} 个项目',
       search_type_scan: '扫描',
