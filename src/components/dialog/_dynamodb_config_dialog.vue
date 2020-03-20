@@ -13,7 +13,7 @@
         </el-autocomplete>
       </el-form-item>
       <el-form-item :label="$t('config.table_header_region')" prop="region" :show-message="false" required>
-        <el-select allow-create v-model="config.region" placeholder="us-east-1" style="width:100%">
+        <el-select allow-create filterable v-model="config.region" placeholder="us-east-1" style="width:100%" @visible-change="$forceUpdate()">
           <el-option-group v-for="group in endpointsAndRegions" :key="group.region" :label="group.region">
             <el-option v-for="item in group.options" :key="item.region" :label="`${item.regionName}   -   ${item.region}`" :value="item.region">
               <span style="float: left">{{ item.regionName }}</span>
@@ -109,7 +109,9 @@ export default {
       }
     },
     endpointHandleSelect(item) {
-      this.config.region = item.region
+      if (this.$utils.isEmpty(this.config.region)) {
+        this.config.region = item.region
+      }
     },
     save(config, apply = false) {
       this.$refs['ruleForm'].validate(valid => {
