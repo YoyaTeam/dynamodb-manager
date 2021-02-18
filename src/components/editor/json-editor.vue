@@ -93,7 +93,6 @@ export default {
 #jsoneditor
   height: 700px
   .ace-jsoneditor.ace_editor
-    font-family: 'Avenir', Helvetica, Arial, sans-serif
     line-height: 1.3
     background-color: #fff
     font-weight: 500
