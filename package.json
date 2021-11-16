@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "ace-builds": "^1.4.1",
-    "aws-sdk": "^2.315.0",
+    "aws-sdk": "^2.814.0",
     "element-ui": "^2.4.9",
     "file-saver": "^2.0.0",
     "jsoneditor": "^5.26.3",
