@@ -36,19 +36,19 @@ or you can build the project, and put the dist directory in amazon s3 and aliyun
 
 ## show me
 ### setting
-![image](http://image.yoyadoc.com/github/setting.png)
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/setting.png)
 
 ### config
-![image](http://image.yoyadoc.com/github/config.png)
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/config.png)
 
 ### table info
-![image](http://image.yoyadoc.com/github/tableinfo.png)
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/tableinfo.png)
 
 ### item search
-![image](http://image.yoyadoc.com/github/item_search.png)
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/item_search.png)
 
 ### table index
-![image](http://image.yoyadoc.com/github/index.png)
+![image](https://github.com/YoyaTeam/images/blob/master/dynamodb-manager/index.png)
 
 ## Build Setup
 
