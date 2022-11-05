@@ -26,7 +26,7 @@ If you have a better idea, welcome to issue.
 
 ## how to use
 
-Here is a sample website that can be used http://dynamodb.yoyadoc.com, 
+Here is a sample website that can be used https://dynamodb-manager.netlify.app/, 
 You can also use docker to deploy the local version. https://hub.docker.com/r/taydy/dynamodb-manager/.
 ``` bash
 docker pull taydy/dynamodb-manager
