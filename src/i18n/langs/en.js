@@ -22,6 +22,7 @@ const en = {
   },
   config: {
     button_add_config: 'Add Connection',
+    button_import_config: 'Import Connection',
     button_edit: 'Edit',
     button_remove: 'Remove',
     button_apply: 'Apply',
