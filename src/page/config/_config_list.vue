@@ -1,6 +1,12 @@
 <template>
   <div id="config-list">
-    <el-button size="mini" type="success" icon="el-icon-circle-plus" @click="handleAdd">{{$t('config.button_add_config')}}</el-button>
+    <el-button size="mini" type="success" icon="el-icon-circle-plus" @click="handleAdd">
+      {{ $t('config.button_add_config') }}
+    </el-button>
+    <el-button size="mini" type="success" icon="el-icon-circle-plus" @click="handleImport">
+      {{ $t('config.button_import_config') }}
+    </el-button>
+    <input type="file" accept="credentials" ref="filebox" id="fileinput" style="display: none;" @change="checkFileSure">
     <el-table :data="configs" v-loading="loading" style="width: 100%" :row-class-name="tableRowClassName">
       <el-table-column prop="alias" :label="$t('config.table_header_alias')">
       </el-table-column>
@@ -42,6 +48,7 @@ import {
 } from '@/constants'
 import { mapMutations } from 'vuex'
 import DynamodbInstance from '@/utils/dynamodb'
+import uuid4 from 'uuid/v4'
 export default {
   components: {
     ConfigDialog
@@ -86,6 +93,66 @@ export default {
     },
     tableRowClassName({ row, rowIndex }) {
       return this.isApplied(row) ? 'success-row' : ''
+    },
+    handleImport() {
+      document.querySelector('#fileinput').click()
+    },
+    checkFileSure() {
+      this.$forceUpdate()
+      let file = document.querySelector('#fileinput').files[0]
+      let reader = new FileReader()
+      let credentials = []
+      reader.onload = function() {
+        this.result.split(/[\r?\n]/).forEach(line => {
+          if (line.match(/\[.+\]/)) {
+            credentials.push({
+              'profile': line
+            })
+          } else {
+            let map = line.replace(/\s*/g, '').split('=')
+            if (credentials.length > 0 && map.length === 2) {
+              credentials[credentials.length - 1][map[0]] = map[1]
+            }
+          }
+        })
+        let dynamodbConfigs = localStorage.getItem('dynamodb_configs')
+        if (!dynamodbConfigs) {
+          dynamodbConfigs = []
+        } else {
+          dynamodbConfigs = JSON.parse(dynamodbConfigs)
+        }
+        credentials.forEach(credential => {
+          let exist = false
+          for (let i = dynamodbConfigs.length - 1; i >= 0; i--) {
+            if (dynamodbConfigs[i]['alias'] === credential['profile']) {
+              exist = true
+              break
+            }
+          }
+          if (!exist && credential['profile'] && credential['region'] && credential['aws_access_key_id'] && credential['aws_secret_access_key']) {
+            let isGlobal = !['cn-north-1', 'cn-northwest-1'].includes(credential['region'])
+            let endpoint = `https://dynamodb.${credential['region']}.amazonaws.com${isGlobal ? '' : '.cn'}`
+            let config = {
+              'alias': credential['profile'],
+              'region': credential['region'],
+              'accessKeyId': credential['aws_access_key_id'],
+              'secretAccessKey': credential['aws_secret_access_key'],
+              'endpoint': endpoint,
+              'createdTime': new Date(),
+              'id': uuid4(),
+              'httpOptions': {
+                'connectTimeout': 5000,
+                'timeout': 5000
+              },
+              'maxRetries': 1
+            }
+            dynamodbConfigs.push(config)
+          }
+        })
+        localStorage.setItem('dynamodb_configs', JSON.stringify(dynamodbConfigs))
+        location.reload()
+      }
+      reader.readAsText(file)
     },
     handleAdd() {
       this.currentConfig = {}

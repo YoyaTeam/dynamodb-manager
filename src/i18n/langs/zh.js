@@ -22,6 +22,7 @@ const zh = {
   },
   config: {
     button_add_config: '添加链接',
+    button_import_config: '导入链接',
     button_edit: '编辑',
     button_remove: '移除',
     button_apply: '应用',
