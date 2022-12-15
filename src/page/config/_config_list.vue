@@ -130,7 +130,8 @@ export default {
             }
           }
           if (!exist && credential['profile'] && credential['region'] && credential['aws_access_key_id'] && credential['aws_secret_access_key']) {
-            let endpoint = `https://dynamodb.${credential['region']}.amazonaws.com.cn`
+            let isGlobal = !['cn-north-1', 'cn-northwest-1'].includes(credential['region'])
+            let endpoint = `https://dynamodb.${credential['region']}.amazonaws.com${isGlobal ? '' : '.cn'}`
             let config = {
               'alias': credential['profile'],
               'region': credential['region'],
